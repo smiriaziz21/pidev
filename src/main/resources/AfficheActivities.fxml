@@ -13,6 +13,9 @@
             <TableColumn fx:id="colid" text="ID" prefWidth="150.0"/>
             <TableColumn fx:id="colname" text="Name" prefWidth="200.0"/>
             <TableColumn fx:id="colActions" text="Actions" prefWidth="150.0"/>
+            <TableColumn fx:id="colDelete" text=""/>
+
+
         </columns>
     </TableView>
 

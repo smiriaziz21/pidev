@@ -1,105 +1,146 @@
 package Controllers;
 
 import Entite.Activities;
+import Service.IService;
 import Service.ServiceActivities;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import javafx.util.Callback;
-
-import java.io.IOException;
+import java.net.URL;
 import java.sql.SQLException;
-import java.util.List;
+import java.util.ResourceBundle;
 
-public class AfficheActiviteController {
-
-    @FXML
-    private TableColumn<Activities, Integer> colid;
-
-    @FXML
-    private TableColumn<Activities, String> colname;
-
-    @FXML
-    private TableColumn<Activities, Void> colActions; // New Column for Actions
+public class AfficheActiviteController implements Initializable {
 
     @FXML
     private TableView<Activities> tablev;
-
-    private ServiceActivities serviceActivities = new ServiceActivities();
+    @FXML
+    private TableColumn<Activities, Integer> colid;
+    @FXML
+    private TableColumn<Activities, String> colname;
+    @FXML
+    private TableColumn<Activities, Void> colActions;
+    @FXML
+    private TableColumn<Activities, Void> colDelete;
 
     @FXML
-    void initialize() {
-        try {
-            List<Activities> list = serviceActivities.getAll();
-            ObservableList<Activities> ob = FXCollections.observableList(list);
-            tablev.setItems(ob);
-
-            colid.setCellValueFactory(new PropertyValueFactory<>("id"));
-            colname.setCellValueFactory(new PropertyValueFactory<>("name"));
-
-            // Add action buttons (Edit & Delete)
-            addButtonToTable();
-        } catch (SQLException e) {
-            System.out.println(e);
-        }
+    private void Back(ActionEvent event) {
+        // Code pour revenir à l'écran précédent
+        System.out.println("Retour à l'écran précédent");
     }
 
-    private void addButtonToTable() {
-        Callback<TableColumn<Activities, Void>, TableCell<Activities, Void>> cellFactory = new Callback<>() {
-            @Override
-            public TableCell<Activities, Void> call(final TableColumn<Activities, Void> param) {
-                return new TableCell<>() {
-                    private final Button editButton = new Button("Edit");
-                    private final Button deleteButton = new Button("Delete");
+    private final ServiceActivities service = new ServiceActivities(); // ✅ Déclaration correcte
+
+    private ObservableList<Activities> activitiesList = FXCollections.observableArrayList();
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        loadActivities();
+        setupUpdateButton();
+        setupDeleteButton();
+    }
+
+    private void loadActivities() {
+        try {
+            activitiesList.setAll(service.getAll());
+            tablev.setItems(activitiesList);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    private void setupDeleteButton() {
+        Callback<TableColumn<Activities, Void>, TableCell<Activities, Void>> cellFactory = param ->
+                new TableCell<>() {
+                    private final Button btnDelete = new Button("Delete");
 
                     {
-                        editButton.setStyle("-fx-background-color: #ffa726; -fx-text-fill: white; -fx-border-radius: 5px;");
-                        deleteButton.setStyle("-fx-background-color: #e53935; -fx-text-fill: white; -fx-border-radius: 5px;");
-
-                        editButton.setOnAction(event -> {
-                            Activities activite = getTableView().getItems().get(getIndex());
-                            System.out.println("Editing: " + activite.getName());
-                            // Implement edit logic here (e.g., open edit form)
+                        btnDelete.setOnAction((ActionEvent event) -> {
+                            Activities activity = getTableView().getItems().get(getIndex());
+                            deleteActivity(activity);
                         });
-
-                        deleteButton.setOnAction(event -> {
-                            Activities activite = getTableView().getItems().get(getIndex());
-                            tablev.getItems().remove(activite);
-                            System.out.println("Deleted: " + activite.getName());
-                            // Implement delete logic in database if needed
-                        });
+                        btnDelete.setStyle("-fx-background-color: #e53935; -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold;");
                     }
 
                     @Override
-                    public void updateItem(Void item, boolean empty) {
+                    protected void updateItem(Void item, boolean empty) {
                         super.updateItem(item, empty);
                         if (empty) {
                             setGraphic(null);
                         } else {
-                            editButton.setMinWidth(60);
-                            deleteButton.setMinWidth(70);
-                            setGraphic(new javafx.scene.layout.HBox(10, editButton, deleteButton));
+                            setGraphic(btnDelete);
                         }
                     }
                 };
-            }
-        };
+
+        colDelete.setCellFactory(cellFactory);
+    }
+    private void deleteActivity(Activities activity) {
+        try {
+            service.delete(activity.getId());  // Suppression de la base de données
+            activitiesList.remove(activity);   // Mise à jour du tableau
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    private void setupUpdateButton() {
+        Callback<TableColumn<Activities, Void>, TableCell<Activities, Void>> cellFactory = param ->
+                new TableCell<>() {
+                    private final Button btnUpdate = new Button("Update");
+
+                    {
+                        btnUpdate.setOnAction((ActionEvent event) -> {
+                            Activities activity = getTableView().getItems().get(getIndex());
+                            openUpdateWindow(activity);
+                        });
+                        btnUpdate.setStyle("-fx-background-color: #ffa726; -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold;");
+                    }
+
+                    @Override
+                    protected void updateItem(Void item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setGraphic(null);
+                        } else {
+                            setGraphic(btnUpdate);
+                        }
+                    }
+                };
 
         colActions.setCellFactory(cellFactory);
     }
 
-    @FXML
-    void Back(ActionEvent event) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/AjouterActivities.fxml"));
-        Parent root = loader.load();
-        tablev.getScene().setRoot(root);
+    private void openUpdateWindow(Activities activity) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ModifierActivite.fxml"));
+            Parent root = loader.load();
+
+            ModifierActiviteController controller = loader.getController();
+            controller.initData(activity);
+
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setTitle("Update Activity");
+            stage.showAndWait();
+
+            loadActivities(); // Refresh after update
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

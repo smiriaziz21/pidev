@@ -6,7 +6,7 @@ public class DataSource {
     private Connection con;
     private String url = "jdbc:mysql://localhost:3306/pidev";
     private String user = "root";
-    private String pass = "";
+    private String pass = "your_password";
     private static DataSource ds;
 
     private DataSource() {

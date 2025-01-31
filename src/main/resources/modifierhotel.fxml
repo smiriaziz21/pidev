@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx/11.0.1"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="Controllers.ModifierHotelController">
+
+    <TableView fx:id="tableView" layoutX="25.0" layoutY="50.0" prefHeight="300.0" prefWidth="550.0">
+        <columns>
+            <TableColumn fx:id="colId" text="Matricule Hotel" />
+            <TableColumn fx:id="colName" text="Nom" />
+            <TableColumn fx:id="colLocation" text="Localisation" />
+            <TableColumn fx:id="colAction" text="Actions" />
+        </columns>
+    </TableView>
+</VBox>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns="http://javafx.com/javafx/11.0.1"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="Controllers.DashboardController">
+
+    <!-- Barre Latérale -->
+    <left>
+        <VBox spacing="10" style="-fx-background-color: #2C3E50; -fx-padding: 15;">
+            <Label text="Gestion Hotels  Chambres" style="-fx-text-fill: white; -fx-font-size: 16px;" />
+            <Button text="🏨 Ajouter Hotel" fx:id="btnAjouterHotel" style="-fx-background-color: #3498DB; -fx-text-fill: white;" />
+            <Button text="📝 Modifier Hotel" fx:id="btnModifierHotel" style="-fx-background-color: #3498DB; -fx-text-fill: white;" />
+            <Button text="❌ Supprimer Hotel" fx:id="btnSupprimerHotel" style="-fx-background-color: #3498DB; -fx-text-fill: white;" />
+            <Button text="🛏 Ajouter Chambre" fx:id="btnAjouterChambre" style="-fx-background-color: #E67E22; -fx-text-fill: white;" />
+            <Button text="📝 Modifier Chambre" fx:id="btnModifierChambre" style="-fx-background-color: #E67E22; -fx-text-fill: white;" />
+            <Button text="❌ Supprimer Chambre" fx:id="btnSupprimerChambre" style="-fx-background-color: #E67E22; -fx-text-fill: white;" />
+        </VBox>
+    </left>
+
+    <!-- Contenu Principal -->
+    <center>
+        <AnchorPane fx:id="mainContent" style="-fx-background-color: #ECF0F1;" />
+    </center>
+
+</BorderPane>

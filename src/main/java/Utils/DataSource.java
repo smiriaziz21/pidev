@@ -4,7 +4,7 @@ public class DataSource {
 
     private Connection conn;
 
-    private  String url = "jdbc:mysql://localhost:3306/esprit1al2";
+    private  String url = "jdbc:mysql://localhost:3306/pidev";
     private  String user = "root";
     private  String pass = "";
     private static DataSource data;

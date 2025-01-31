@@ -46,10 +46,6 @@ public class ServicePersonne implements IService<Personne> {
 
     }
 
-    @Override
-    public Personne getById(int id) throws SQLException {
-        return null;
-    }
 
     @Override
     public List<Personne> getAll() throws SQLException {

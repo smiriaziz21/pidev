@@ -5,20 +5,20 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="Controllers.AfficheActiviteController">
+<AnchorPane prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.AfficheActiviteController">
 
-    <TableView fx:id="tablev" layoutX="50.0" layoutY="50.0" prefHeight="300.0" prefWidth="500.0">
+    <TableView fx:id="tablev" layoutX="100.0" layoutY="150.0" prefHeight="400.0" prefWidth="1000.0">
+
         <columns>
-            <TableColumn fx:id="colid" text="ID" prefWidth="150.0"/>
-            <TableColumn fx:id="colname" text="Name" prefWidth="200.0"/>
+
+            <TableColumn fx:id="colname" text="Name" prefWidth="100.0"/>
+            <TableColumn fx:id="coldescription" text="Description" prefWidth="150.0"/>
+            <TableColumn fx:id="collocation" text="Location" prefWidth="100.0"/>
+            <TableColumn fx:id="colstartDate" text="Start Date" prefWidth="100.0"/>
+            <TableColumn fx:id="colendDate" text="End Date" prefWidth="100.0"/>
+
             <TableColumn fx:id="colActions" text="Actions" prefWidth="150.0"/>
-            <TableColumn fx:id="colDelete" text=""/>
-
-
         </columns>
     </TableView>
-
-    <Button layoutX="250.0" layoutY="360.0" text="Back" onAction="#Back"/>
 
 </AnchorPane>

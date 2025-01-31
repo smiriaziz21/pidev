@@ -89,14 +89,14 @@ public class AjouterActiviteController {
     @FXML
     void delete(ActionEvent event) {
         try {
-            // TODO: Replace with actual ID from the selected activity
-            int activityIdToDelete = 1; // This should be dynamically retrieved
 
-            // Create a dummy Activities object with only the ID set
+            int activityIdToDelete = 1;
+
+
             Activities activityToDelete = new Activities();
             activityToDelete.setId(activityIdToDelete);
 
-            service.supprimer(activityToDelete); // Pass an Activities object
+            service.supprimer(activityToDelete);
             System.out.println("Activity deleted successfully!");
 
         } catch (SQLException e) {
@@ -111,7 +111,7 @@ public class AjouterActiviteController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/AfficheActivities.fxml"));
             Parent root = loader.load();
-            txtname.getScene().setRoot(root); // Fixed from txtage to txtname
+            txtname.getScene().setRoot(root);
         } catch (IOException e) {
             System.out.println("Error loading display page: " + e.getMessage());
         }

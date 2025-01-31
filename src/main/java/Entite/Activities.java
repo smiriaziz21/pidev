@@ -10,9 +10,9 @@ public class Activities {
     private LocalDateTime startDate;
     private LocalDateTime endDate;
     private String location;
-    private Integer responsibleId; // Nullable field
+    private Integer responsibleId;
 
-    // Full constructor
+
     public Activities(int id, int idEvent, String name, String description, LocalDateTime startDate, LocalDateTime endDate, String location, Integer responsibleId) {
         this.id = id;
         this.idEvent = idEvent;
@@ -24,7 +24,7 @@ public class Activities {
         this.responsibleId = responsibleId;
     }
 
-    // Constructor without ID (for adding new activities)
+
     public Activities(int idEvent, String name, String description, LocalDateTime startDate, LocalDateTime endDate, String location, Integer responsibleId) {
         this.idEvent = idEvent;
         this.name = name;
@@ -35,9 +35,9 @@ public class Activities {
         this.responsibleId = responsibleId;
     }
 
-    // Default constructor (optional)
+
     public Activities() {
-        // Default initialization if necessary
+
     }
 
 

@@ -12,15 +12,15 @@ public class Test {
 
         ServiceActivities service = new ServiceActivities();
 
-        // Create a new activity with all necessary fields
+
         Activities activity = new Activities(
-                1, // id_event
-                "Team Meeting", // name
-                "Discuss project progress", // description
-                LocalDateTime.of(2025, 1, 30, 10, 0), // start_date
-                LocalDateTime.of(2025, 1, 30, 12, 0), // end_date
-                "Meeting Room 1", // location
-                2 // responsible_id (nullable: pass `null` if not applicable)
+                1,
+                "Team Meeting",
+                "Discuss project progress",
+                LocalDateTime.of(2025, 1, 30, 10, 0),
+                LocalDateTime.of(2025, 1, 30, 12, 0),
+                "Meeting Room 1",
+                2
         );
 
         // Add the activity to the database

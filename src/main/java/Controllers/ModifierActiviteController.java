@@ -2,17 +2,15 @@ package Controllers;
 
 import Entite.Activities;
 import Service.ServiceActivities;
-
 import javafx.fxml.FXML;
-
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
-import java.awt.event.ActionEvent;
-import java.io.IOException;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.time.LocalTime;
 
 public class ModifierActiviteController {
 
@@ -22,15 +20,15 @@ public class ModifierActiviteController {
     private TextField txtDescription;
     @FXML
     private TextField txtLocation;
+
+    // Replace these TextFields with DatePicker controls
     @FXML
-    private TextField txtStartDate;  // Start Date field
+    private DatePicker dpStartDate;  // DatePicker for Start Date
     @FXML
-    private TextField txtEndDate;    // End Date field
+    private DatePicker dpEndDate;    // DatePicker for End Date
 
     private Activities currentActivity;
     private final ServiceActivities service = new ServiceActivities();
-
-    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     public void initData(Activities activity) {
         this.currentActivity = activity;
@@ -39,31 +37,30 @@ public class ModifierActiviteController {
         txtDescription.setText(activity.getDescription());
         txtLocation.setText(activity.getLocation());
 
-
-        txtStartDate.setText(formatter.format(activity.getStartDate()));
-        txtEndDate.setText(formatter.format(activity.getEndDate()));
+        // Set the DatePicker values using the date portion of the LocalDateTime
+        LocalDate startDate = activity.getStartDate().toLocalDate();
+        LocalDate endDate = activity.getEndDate().toLocalDate();
+        dpStartDate.setValue(startDate);
+        dpEndDate.setValue(endDate);
     }
-
 
     @FXML
     private void updateActivity() {
         try {
-
             currentActivity.setName(txtname.getText());
             currentActivity.setDescription(txtDescription.getText());
             currentActivity.setLocation(txtLocation.getText());
 
+            // Create LocalDateTime objects from the DatePicker values (defaulting time to MIDNIGHT)
+            LocalDateTime startDateTime = LocalDateTime.of(dpStartDate.getValue(), LocalTime.MIDNIGHT);
+            LocalDateTime endDateTime = LocalDateTime.of(dpEndDate.getValue(), LocalTime.MIDNIGHT);
 
-            LocalDateTime startDate = LocalDateTime.parse(txtStartDate.getText(), formatter);
-            LocalDateTime endDate = LocalDateTime.parse(txtEndDate.getText(), formatter);
-
-            currentActivity.setStartDate(startDate);
-            currentActivity.setEndDate(endDate);
-
+            currentActivity.setStartDate(startDateTime);
+            currentActivity.setEndDate(endDateTime);
 
             service.update(currentActivity);
 
-
+            // Close the current window after update
             Stage stage = (Stage) txtname.getScene().getWindow();
             stage.close();
         } catch (SQLException e) {
@@ -73,11 +70,8 @@ public class ModifierActiviteController {
         }
     }
 
-
     public void goBack(javafx.event.ActionEvent actionEvent) {
         Stage stage = (Stage) txtname.getScene().getWindow();
         stage.close();
     }
-
 }
-

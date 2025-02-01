@@ -8,12 +8,14 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 public class AjouterActiviteController {
@@ -23,9 +25,9 @@ public class AjouterActiviteController {
     @FXML
     private TextField txtDescription;
     @FXML
-    private TextField txtStartDate;
+    private DatePicker dpStartDate;
     @FXML
-    private TextField txtEndDate;
+    private DatePicker dpEndDate;
     @FXML
     private TextField txtLocation;
     @FXML
@@ -34,7 +36,7 @@ public class AjouterActiviteController {
     private TextField txtIdEvent;
 
     private final ServiceActivities service = new ServiceActivities();
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
     private AfficheActiviteController parentController;
     private Activities currentActivity = null;
 
@@ -49,8 +51,8 @@ public class AjouterActiviteController {
             this.currentActivity = activity;
             txtname.setText(activity.getName());
             txtDescription.setText(activity.getDescription());
-            txtStartDate.setText(activity.getStartDate().format(formatter));
-            txtEndDate.setText(activity.getEndDate().format(formatter));
+            dpStartDate.setValue(activity.getStartDate().toLocalDate());
+            dpEndDate.setValue(activity.getEndDate().toLocalDate());
             txtLocation.setText(activity.getLocation());
             txtResponsibleId.setText(String.valueOf(activity.getResponsibleId()));
             txtIdEvent.setText(String.valueOf(activity.getIdEvent()));
@@ -61,14 +63,15 @@ public class AjouterActiviteController {
     void ajouter(ActionEvent event) {
         try {
             if (!validateInputs()) return;
-
+            LocalDateTime startDateTime = LocalDateTime.of(dpStartDate.getValue(), LocalTime.MIDNIGHT);
+            LocalDateTime endDateTime = LocalDateTime.of(dpEndDate.getValue(), LocalTime.MIDNIGHT);
             // Create new activity
             Activities activity = new Activities(
                     Integer.parseInt(txtIdEvent.getText()),
                     txtname.getText(),
                     txtDescription.getText(),
-                    LocalDateTime.parse(txtStartDate.getText(), formatter),
-                    LocalDateTime.parse(txtEndDate.getText(), formatter),
+                    startDateTime,
+                    endDateTime,
                     txtLocation.getText(),
                     Integer.parseInt(txtResponsibleId.getText())
             );
@@ -87,39 +90,6 @@ public class AjouterActiviteController {
         }
     }
 
-    @FXML
-    void update(ActionEvent event) {
-        try {
-            if (currentActivity == null) {
-                showAlert(Alert.AlertType.ERROR, "Error", "No activity selected for update!");
-                return;
-            }
-            if (!validateInputs()) return;
-
-            // Update the existing activity
-            Activities updatedActivity = new Activities(
-                    currentActivity.getId(), // Use existing ID
-                    Integer.parseInt(txtIdEvent.getText()),
-                    txtname.getText(),
-                    txtDescription.getText(),
-                    LocalDateTime.parse(txtStartDate.getText(), formatter),
-                    LocalDateTime.parse(txtEndDate.getText(), formatter),
-                    txtLocation.getText(),
-                    Integer.parseInt(txtResponsibleId.getText())
-            );
-
-            service.update(updatedActivity);
-            showAlert(Alert.AlertType.INFORMATION, "Success", "Activity updated successfully!");
-
-            if (parentController != null) {
-                parentController.loadActivities();
-            }
-
-            closeWindow();
-        } catch (SQLException e) {
-            showAlert(Alert.AlertType.ERROR, "Database Error", "Error updating activity: " + e.getMessage());
-        }
-    }
 
     @FXML
     void delete(ActionEvent event) {
@@ -142,37 +112,30 @@ public class AjouterActiviteController {
         }
     }
 
-    @FXML
-    void afficher(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AfficheActivities.fxml"));
-            Parent root = loader.load();
-            Stage stage = new Stage();
-            stage.setScene(new Scene(root));
-            stage.setTitle("Activities List");
-            stage.show();
-        } catch (IOException e) {
-            showAlert(Alert.AlertType.ERROR, "Loading Error", "Error loading display page: " + e.getMessage());
-        }
-    }
+
 
     private boolean validateInputs() {
-        if (txtname.getText().isEmpty() || txtDescription.getText().isEmpty() ||
-                txtStartDate.getText().isEmpty() || txtEndDate.getText().isEmpty() ||
-                txtLocation.getText().isEmpty() || txtResponsibleId.getText().isEmpty() ||
+        // Check if any required field is empty or null
+        if (txtname.getText().isEmpty() ||
+                txtDescription.getText().isEmpty() ||
+                dpStartDate.getValue() == null ||
+                dpEndDate.getValue() == null ||
+                txtLocation.getText().isEmpty() ||
+                txtResponsibleId.getText().isEmpty() ||
                 txtIdEvent.getText().isEmpty()) {
+
             showAlert(Alert.AlertType.WARNING, "Validation Error", "Please fill in all fields.");
             return false;
         }
 
-        try {
-            LocalDateTime.parse(txtStartDate.getText(), formatter);
-            LocalDateTime.parse(txtEndDate.getText(), formatter);
-        } catch (Exception e) {
-            showAlert(Alert.AlertType.WARNING, "Validation Error", "Invalid date format. Use 'yyyy-MM-dd HH:mm:ss'.");
+        // You no longer need to parse the dates because DatePicker returns a LocalDate.
+        // If you want to ensure the dates are logically valid (e.g., start date before end date), you can add:
+        if (dpStartDate.getValue().isAfter(dpEndDate.getValue())) {
+            showAlert(Alert.AlertType.WARNING, "Validation Error", "Start date must be before end date.");
             return false;
         }
 
+        // Validate that Responsible ID and Event ID are numbers.
         try {
             Integer.parseInt(txtResponsibleId.getText());
             Integer.parseInt(txtIdEvent.getText());
@@ -184,6 +147,7 @@ public class AjouterActiviteController {
         return true;
     }
 
+
     private void showAlert(Alert.AlertType type, String title, String message) {
         Alert alert = new Alert(type);
         alert.setTitle(title);
@@ -192,6 +156,7 @@ public class AjouterActiviteController {
         alert.showAndWait();
     }
 
+    @FXML
     private void closeWindow() {
         Stage stage = (Stage) txtname.getScene().getWindow();
         stage.close();

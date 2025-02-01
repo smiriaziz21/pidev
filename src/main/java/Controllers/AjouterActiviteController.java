@@ -6,7 +6,10 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -32,88 +35,165 @@ public class AjouterActiviteController {
 
     private final ServiceActivities service = new ServiceActivities();
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private AfficheActiviteController parentController;
+    private Activities currentActivity = null;
 
-    // Method for adding an activity
+    // Link to parent controller for table refresh
+    public void setParentController(AfficheActiviteController controller) {
+        this.parentController = controller;
+    }
+
+    // Load existing activity for updating
+    public void setActivity(Activities activity) {
+        if (activity != null) {
+            this.currentActivity = activity;
+            txtname.setText(activity.getName());
+            txtDescription.setText(activity.getDescription());
+            txtStartDate.setText(activity.getStartDate().format(formatter));
+            txtEndDate.setText(activity.getEndDate().format(formatter));
+            txtLocation.setText(activity.getLocation());
+            txtResponsibleId.setText(String.valueOf(activity.getResponsibleId()));
+            txtIdEvent.setText(String.valueOf(activity.getIdEvent()));
+        }
+    }
+
     @FXML
     void ajouter(ActionEvent event) {
         try {
-            // Retrieving all the input values
-            String name = txtname.getText();
-            String description = txtDescription.getText();
-            LocalDateTime startDate = LocalDateTime.parse(txtStartDate.getText(), formatter);
-            LocalDateTime endDate = LocalDateTime.parse(txtEndDate.getText(), formatter);
-            String location = txtLocation.getText();
-            int responsibleId = Integer.parseInt(txtResponsibleId.getText());
-            int idEvent = Integer.parseInt(txtIdEvent.getText());
+            if (!validateInputs()) return;
 
-            // Creating a new activity
-            Activities activity = new Activities(idEvent, name, description, startDate, endDate, location, responsibleId);
+            // Create new activity
+            Activities activity = new Activities(
+                    Integer.parseInt(txtIdEvent.getText()),
+                    txtname.getText(),
+                    txtDescription.getText(),
+                    LocalDateTime.parse(txtStartDate.getText(), formatter),
+                    LocalDateTime.parse(txtEndDate.getText(), formatter),
+                    txtLocation.getText(),
+                    Integer.parseInt(txtResponsibleId.getText())
+            );
 
-            // Adding the activity
             service.ajouter(activity);
-            System.out.println("Activity added successfully!");
+            showAlert(Alert.AlertType.INFORMATION, "Success", "Activity added successfully!");
 
+            // Refresh table in the main window
+            if (parentController != null) {
+                parentController.loadActivities();
+            }
+
+            closeWindow();
         } catch (SQLException e) {
-            System.out.println("Error adding activity: " + e.getMessage());
-        } catch (Exception e) {
-            System.out.println("Invalid input: " + e.getMessage());
+            showAlert(Alert.AlertType.ERROR, "Database Error", "Error adding activity: " + e.getMessage());
         }
     }
 
     @FXML
     void update(ActionEvent event) {
         try {
-            String name = txtname.getText();
-            String description = txtDescription.getText();
-            LocalDateTime startDate = LocalDateTime.parse(txtStartDate.getText(), formatter);
-            LocalDateTime endDate = LocalDateTime.parse(txtEndDate.getText(), formatter);
-            String location = txtLocation.getText();
-            int responsibleId = Integer.parseInt(txtResponsibleId.getText());
-            int idEvent = Integer.parseInt(txtIdEvent.getText());
+            if (currentActivity == null) {
+                showAlert(Alert.AlertType.ERROR, "Error", "No activity selected for update!");
+                return;
+            }
+            if (!validateInputs()) return;
 
-            // TODO: Replace with actual ID from the selected activity
-            int activityIdToUpdate = 1;
+            // Update the existing activity
+            Activities updatedActivity = new Activities(
+                    currentActivity.getId(), // Use existing ID
+                    Integer.parseInt(txtIdEvent.getText()),
+                    txtname.getText(),
+                    txtDescription.getText(),
+                    LocalDateTime.parse(txtStartDate.getText(), formatter),
+                    LocalDateTime.parse(txtEndDate.getText(), formatter),
+                    txtLocation.getText(),
+                    Integer.parseInt(txtResponsibleId.getText())
+            );
 
-            Activities activity = new Activities(activityIdToUpdate, idEvent, name, description, startDate, endDate, location, responsibleId);
+            service.update(updatedActivity);
+            showAlert(Alert.AlertType.INFORMATION, "Success", "Activity updated successfully!");
 
-            service.update(activity);
-            System.out.println("Activity updated successfully!");
+            if (parentController != null) {
+                parentController.loadActivities();
+            }
 
+            closeWindow();
         } catch (SQLException e) {
-            System.out.println("Error updating activity: " + e.getMessage());
-        } catch (Exception e) {
-            System.out.println("Invalid input: " + e.getMessage());
+            showAlert(Alert.AlertType.ERROR, "Database Error", "Error updating activity: " + e.getMessage());
         }
     }
 
     @FXML
     void delete(ActionEvent event) {
         try {
+            if (currentActivity == null) {
+                showAlert(Alert.AlertType.ERROR, "Error", "No activity selected for deletion!");
+                return;
+            }
 
-            int activityIdToDelete = 1;
+            service.supprimer(currentActivity);
+            showAlert(Alert.AlertType.INFORMATION, "Success", "Activity deleted successfully!");
 
+            if (parentController != null) {
+                parentController.loadActivities();
+            }
 
-            Activities activityToDelete = new Activities();
-            activityToDelete.setId(activityIdToDelete);
-
-            service.supprimer(activityToDelete);
-            System.out.println("Activity deleted successfully!");
-
+            closeWindow();
         } catch (SQLException e) {
-            System.out.println("Error deleting activity: " + e.getMessage());
+            showAlert(Alert.AlertType.ERROR, "Database Error", "Error deleting activity: " + e.getMessage());
         }
     }
-
-
 
     @FXML
     void afficher(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/AfficheActivities.fxml"));
             Parent root = loader.load();
-            txtname.getScene().setRoot(root);
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Activities List");
+            stage.show();
         } catch (IOException e) {
-            System.out.println("Error loading display page: " + e.getMessage());
+            showAlert(Alert.AlertType.ERROR, "Loading Error", "Error loading display page: " + e.getMessage());
         }
+    }
+
+    private boolean validateInputs() {
+        if (txtname.getText().isEmpty() || txtDescription.getText().isEmpty() ||
+                txtStartDate.getText().isEmpty() || txtEndDate.getText().isEmpty() ||
+                txtLocation.getText().isEmpty() || txtResponsibleId.getText().isEmpty() ||
+                txtIdEvent.getText().isEmpty()) {
+            showAlert(Alert.AlertType.WARNING, "Validation Error", "Please fill in all fields.");
+            return false;
+        }
+
+        try {
+            LocalDateTime.parse(txtStartDate.getText(), formatter);
+            LocalDateTime.parse(txtEndDate.getText(), formatter);
+        } catch (Exception e) {
+            showAlert(Alert.AlertType.WARNING, "Validation Error", "Invalid date format. Use 'yyyy-MM-dd HH:mm:ss'.");
+            return false;
+        }
+
+        try {
+            Integer.parseInt(txtResponsibleId.getText());
+            Integer.parseInt(txtIdEvent.getText());
+        } catch (NumberFormatException e) {
+            showAlert(Alert.AlertType.WARNING, "Validation Error", "Responsible ID and Event ID must be numbers.");
+            return false;
+        }
+
+        return true;
+    }
+
+    private void showAlert(Alert.AlertType type, String title, String message) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    private void closeWindow() {
+        Stage stage = (Stage) txtname.getScene().getWindow();
+        stage.close();
     }
 }

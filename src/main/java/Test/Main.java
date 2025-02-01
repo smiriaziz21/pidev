@@ -16,8 +16,8 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-
-       FXMLLoader loader=new FXMLLoader(getClass().getResource("/AfficheActivities.fxml"));
+        FXMLLoader loader=new FXMLLoader(getClass().getResource("/AfficheActivities.fxml"));
+       // FXMLLoader loader=new FXMLLoader(getClass().getResource("/AjouteActivities.fxml"));
 
 
         Parent root=loader.load();

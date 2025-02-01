@@ -4,21 +4,24 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
 
 <AnchorPane prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.AfficheActiviteController">
+    <!-- Container for Add Button and TableView -->
+    <VBox spacing="10" layoutX="50.0" layoutY="50.0">
+        <!-- Separate Add Activity button -->
+        <Button text="Add Activity" prefWidth="200" onAction="#handleAddActivity"/>
 
-    <TableView fx:id="tablev" layoutX="100.0" layoutY="150.0" prefHeight="400.0" prefWidth="1000.0">
-
-        <columns>
-
-            <TableColumn fx:id="colname" text="Name" prefWidth="100.0"/>
-            <TableColumn fx:id="coldescription" text="Description" prefWidth="150.0"/>
-            <TableColumn fx:id="collocation" text="Location" prefWidth="100.0"/>
-            <TableColumn fx:id="colstartDate" text="Start Date" prefWidth="100.0"/>
-            <TableColumn fx:id="colendDate" text="End Date" prefWidth="100.0"/>
-
-            <TableColumn fx:id="colActions" text="Actions" prefWidth="150.0"/>
-        </columns>
-    </TableView>
-
+        <!-- The table displaying activities -->
+        <TableView fx:id="tablev" prefHeight="400.0" prefWidth="1000.0">
+            <columns>
+                <TableColumn fx:id="colname" text="Name" prefWidth="100.0"/>
+                <TableColumn fx:id="coldescription" text="Description" prefWidth="150.0"/>
+                <TableColumn fx:id="collocation" text="Location" prefWidth="100.0"/>
+                <TableColumn fx:id="colstartDate" text="Start Date" prefWidth="100.0"/>
+                <TableColumn fx:id="colendDate" text="End Date" prefWidth="100.0"/>
+                <TableColumn fx:id="colActions" text="Actions" prefWidth="150.0"/>
+            </columns>
+        </TableView>
+    </VBox>
 </AnchorPane>

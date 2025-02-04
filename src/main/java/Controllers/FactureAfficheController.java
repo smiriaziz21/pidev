@@ -1,7 +1,7 @@
 package Controllers;
 
-import Entite.Activities;
-import Service.ServiceActivities;
+import Entite.Facture;
+import Service.ServiceFacture;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -24,50 +24,44 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
 
-public class AfficheActiviteController implements Initializable {
+public class FactureAfficheController implements Initializable {
 
     @FXML
-    private TableView<Activities> tablev;
-
-
+    private TableView<Facture> tablev;
 
     @FXML
-    private TableColumn<Activities, String> colname;
+    private TableColumn<Facture, Integer> colId;
 
     @FXML
-    private TableColumn<Activities, String> coldescription;
+    private TableColumn<Facture, Integer> colReservationId;
 
     @FXML
-    private TableColumn<Activities, String> collocation;
+    private TableColumn<Facture, Double> colAmount;
 
     @FXML
-    private TableColumn<Activities, String> colstartDate;
+    private TableColumn<Facture, String> colDate;
 
     @FXML
-    private TableColumn<Activities, String> colendDate;
+    private TableColumn<Facture, Void> colActions;
 
-    @FXML
-    private TableColumn<Activities, Void> colActions;
-
-    private final ServiceActivities service = new ServiceActivities();
-    private ObservableList<Activities> activitiesList = FXCollections.observableArrayList();
+    private final ServiceFacture service = new ServiceFacture();
+    private ObservableList<Facture> facturesList = FXCollections.observableArrayList();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        loadActivities();
+        loadFactures();
         setupActionButtons();
     }
 
-    private void loadActivities() {
+    private void loadFactures() {
         try {
-            activitiesList.setAll(service.getAll());
-            tablev.setItems(activitiesList);
+            facturesList.setAll(service.getAll());
+            tablev.setItems(facturesList);
 
-            colname.setCellValueFactory(new PropertyValueFactory<>("name"));
-            coldescription.setCellValueFactory(new PropertyValueFactory<>("description"));
-            collocation.setCellValueFactory(new PropertyValueFactory<>("location"));
-            colstartDate.setCellValueFactory(new PropertyValueFactory<>("startDate"));
-            colendDate.setCellValueFactory(new PropertyValueFactory<>("endDate"));
+            colId.setCellValueFactory(new PropertyValueFactory<>("id"));
+            colReservationId.setCellValueFactory(new PropertyValueFactory<>("reservationId"));
+            colAmount.setCellValueFactory(new PropertyValueFactory<>("amount"));
+            colDate.setCellValueFactory(new PropertyValueFactory<>("date"));
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -75,20 +69,19 @@ public class AfficheActiviteController implements Initializable {
 
     private void setupActionButtons() {
 
-        Callback<TableColumn<Activities, Void>, TableCell<Activities, Void>> cellFactory = param -> new TableCell<>() {
+        Callback<TableColumn<Facture, Void>, TableCell<Facture, Void>> cellFactory = param -> new TableCell<>() {
             private final Button btnUpdate = new Button("Update");
             private final Button btnDelete = new Button("Delete");
 
             {
                 btnUpdate.setOnAction((ActionEvent event) -> {
-                    Activities activity = getTableView().getItems().get(getIndex());
-                    openUpdateWindow(activity);
+                    Facture facture = getTableView().getItems().get(getIndex());
+                    openUpdateWindow(facture);
                 });
                 btnDelete.setOnAction((ActionEvent event) -> {
-                    Activities activity = getTableView().getItems().get(getIndex());
-                    deleteActivity(activity);
+                    Facture facture = getTableView().getItems().get(getIndex());
+                    deleteFacture(facture);
                 });
-
 
                 btnUpdate.setStyle("-fx-background-color: #ffa726; -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold;");
                 btnDelete.setStyle("-fx-background-color: #e53935; -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold;");
@@ -100,7 +93,6 @@ public class AfficheActiviteController implements Initializable {
                 if (empty) {
                     setGraphic(null);
                 } else {
-
                     HBox hbox = new HBox(10, btnUpdate, btnDelete);
                     setGraphic(hbox);
                 }
@@ -110,30 +102,30 @@ public class AfficheActiviteController implements Initializable {
         colActions.setCellFactory(cellFactory);
     }
 
-    private void deleteActivity(Activities activity) {
+    private void deleteFacture(Facture facture) {
         try {
-            service.delete(activity.getId());
-            activitiesList.remove(activity);
+            service.supprimer(facture);
+            facturesList.remove(facture);
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    private void openUpdateWindow(Activities activity) {
+    private void openUpdateWindow(Facture facture) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ModifierActivite.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FactureModifier.fxml"));
             Parent root = loader.load();
 
-            ModifierActiviteController controller = loader.getController();
-            controller.initData(activity);
+            FactureModifierController controller = loader.getController();
+            controller.initData(facture);
 
             Stage stage = new Stage();
             stage.setScene(new Scene(root));
             stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setTitle("Update Activity");
+            stage.setTitle("Update Facture");
             stage.showAndWait();
 
-            loadActivities();
+            loadFactures();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -141,7 +133,6 @@ public class AfficheActiviteController implements Initializable {
 
     @FXML
     private void Back(ActionEvent event) {
-
         System.out.println("Back to previous screen");
     }
 }

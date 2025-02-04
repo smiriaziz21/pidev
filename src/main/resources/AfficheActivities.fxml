@@ -1,18 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 
 <AnchorPane prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.AfficheActiviteController">
-    <!-- Container for Add Button and TableView -->
-    <VBox spacing="10" layoutX="50.0" layoutY="50.0">
-        <!-- Separate Add Activity button -->
-        <Button text="Add Activity" prefWidth="200" onAction="#handleAddActivity"/>
 
-        <!-- The table displaying activities -->
+    <VBox spacing="10" layoutX="50.0" layoutY="50.0">
+
+        <Label fx:id="lblWeather"
+               text="Météo : Chargement..."
+               style="-fx-font-size: 18px;
+              -fx-text-fill: #444444;
+              -fx-font-weight: bold;
+              -fx-padding: 10 15 10 15;
+              -fx-background-color: #f0f0f0;
+              -fx-border-radius: 5px;
+              -fx-background-radius: 5px;
+              -fx-border-color: #cccccc;
+              -fx-border-width: 1px;" />
+
+        <!-- Bouton amélioré avec un fond et une bordure -->
+        <Button text="Add Activity"
+                prefWidth="200"
+                onAction="#handleAddActivity"
+                style="-fx-background-color: #4CAF50;
+               -fx-text-fill: white;
+               -fx-font-size: 16px;
+               -fx-font-weight: bold;
+               -fx-padding: 10px;
+               -fx-border-radius: 5px;
+               -fx-background-radius: 5px;
+               -fx-border-color: #388E3C;
+               -fx-border-width: 1px;
+               -fx-hover-background-color: #45A049;" />
+
+
+        <!-- TableView affichant les activités -->
         <TableView fx:id="tablev" prefHeight="400.0" prefWidth="1000.0">
             <columns>
                 <TableColumn fx:id="colname" text="Name" prefWidth="100.0"/>

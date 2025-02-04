@@ -2,10 +2,9 @@ package Controllers;
 
 import Entite.Activities;
 import Service.ServiceActivities;
-import Service.WeatherService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.concurrent.Task;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -43,7 +42,7 @@ public class AfficheActiviteController implements Initializable {
     @FXML
     private Label lblWeather;
 
-    private final WeatherService weatherService = new WeatherService();
+
     private final ServiceActivities service = new ServiceActivities();
     private ObservableList<Activities> activitiesList = FXCollections.observableArrayList();
 
@@ -51,32 +50,10 @@ public class AfficheActiviteController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         loadActivities();
         setupActionButtons();
-        loadWeather();
+
     }
 
-    private void loadWeather() {
-        // Weather task with UI updates
-        Task<String> weatherTask = new Task<>() {
-            @Override
-            protected String call() throws Exception {
-                return weatherService.getWeatherData("Sousse", "TN");
 
-
-            }
-        };
-
-        weatherTask.setOnSucceeded(e -> {
-            lblWeather.setText("Météo : " + weatherTask.getValue());
-        });
-
-        weatherTask.setOnFailed(e -> {
-            lblWeather.setText("Météo : Données indisponibles");
-        });
-
-        Thread thread = new Thread(weatherTask);
-        thread.setDaemon(true);
-        thread.start();
-    }
 
     void loadActivities() {
         try {

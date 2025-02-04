@@ -3,6 +3,7 @@ package Controllers;
 import Entites.Enum.Role;
 import Entites.Users;
 import Services.ServicePersonne;
+import Utils.PasswordHasher;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -13,6 +14,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.io.IOException;
 import java.net.URL;
@@ -76,7 +78,10 @@ public class SignUpController implements Initializable {
             return;
         }
 
-        Users newUser = new Users(0, username, email, password, role);
+        // Hash the password before storing it
+        String hashedPassword = PasswordHasher.hashPassword(password);
+
+        Users newUser = new Users(0, username, email, hashedPassword, role);
 
         try {
             boolean success = ServicePersonne.getInstance().ajouter(newUser);

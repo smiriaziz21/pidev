@@ -17,11 +17,11 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) throws IOException {
 
-       FXMLLoader loader=new FXMLLoader(getClass().getResource("/TEST.fxml"));
+       FXMLLoader loader=new FXMLLoader(getClass().getResource("/FactureAffiche.fxml"));
 
         Parent root=loader.load();
         Scene scene=new Scene(root);
-        stage.setTitle("Liste Factures");
+        stage.setTitle("Ajouter");
         stage.setScene(scene);
         stage.show();
     }

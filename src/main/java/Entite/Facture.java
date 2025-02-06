@@ -1,60 +1,78 @@
 package Entite;
 
+import javafx.beans.property.*;
+
 import java.time.LocalDate;
 
 public class Facture {
 
-    private int id;
-    private int reservationId;
-    private double amount;
-    private LocalDate date;
+    private IntegerProperty id;
+    private IntegerProperty reservationId;
+    private DoubleProperty amount;
+    private ObjectProperty<LocalDate> date;
 
+    // Constructor for new Facture without ID (ID will be set to 0)
     public Facture(int reservationId, double amount, LocalDate date) {
-        this.reservationId = reservationId;
-        this.amount = amount;
-        this.date = date;
+        this.id = new SimpleIntegerProperty(0);  // Set default ID to 0
+        this.reservationId = new SimpleIntegerProperty(reservationId);
+        this.amount = new SimpleDoubleProperty(amount);
+        this.date = new SimpleObjectProperty<>(date);
     }
 
+    // Constructor for existing Facture with ID (used when loading from DB)
     public Facture(int id, int reservationId, double amount, LocalDate date) {
-        this.id = id;
-        this.reservationId = reservationId;
-        this.amount = amount;
-        this.date = date;
+        this.id = new SimpleIntegerProperty(id);
+        this.reservationId = new SimpleIntegerProperty(reservationId);
+        this.amount = new SimpleDoubleProperty(amount);
+        this.date = new SimpleObjectProperty<>(date);
     }
 
-    public Facture() {
-
-    }
-
+    // Getters and Setters for the properties
     public int getId() {
-        return id;
+        return id.get();
     }
 
     public void setId(int id) {
-        this.id = id;
+        this.id.set(id);
+    }
+
+    public IntegerProperty idProperty() {
+        return id;
     }
 
     public int getReservationId() {
-        return reservationId;
+        return reservationId.get();
     }
 
     public void setReservationId(int reservationId) {
-        this.reservationId = reservationId;
+        this.reservationId.set(reservationId);
+    }
+
+    public IntegerProperty reservationIdProperty() {
+        return reservationId;
     }
 
     public double getAmount() {
-        return amount;
+        return amount.get();
     }
 
     public void setAmount(double amount) {
-        this.amount = amount;
+        this.amount.set(amount);
+    }
+
+    public DoubleProperty amountProperty() {
+        return amount;
     }
 
     public LocalDate getDate() {
-        return date;
+        return date.get();
     }
 
     public void setDate(LocalDate date) {
-        this.date = date;
+        this.date.set(date);
+    }
+
+    public ObjectProperty<LocalDate> dateProperty() {
+        return date;
     }
 }

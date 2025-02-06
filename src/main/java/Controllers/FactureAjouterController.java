@@ -4,82 +4,101 @@ import Entite.Facture;
 import Service.ServiceFacture;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 
 import java.sql.SQLException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.sql.Date;
+import java.util.List;
 
 public class FactureAjouterController {
 
     @FXML
-    private TextField txtReservationId;
-    @FXML
     private TextField txtAmount;
     @FXML
-    private TextField txtDate;
+    private DatePicker datePicker;  // DatePicker for selecting date
+    @FXML
+    private ComboBox<Integer> comboReservationId;  // ComboBox for selecting reservation ID
 
     private final ServiceFacture service = new ServiceFacture();
-    private static final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+
+    // Initialize the controller
+    public void initialize() {
+        try {
+            // Fetch reservation IDs and populate the ComboBox without showing alerts
+            List<Integer> reservationIds = service.getReservationIds();
+            comboReservationId.getItems().addAll(reservationIds);
+        } catch (SQLException e) {
+            System.out.println("Error fetching reservation IDs: " + e.getMessage());
+        }
+    }
 
     @FXML
-    void ajouter(ActionEvent event) {
+    void ajouter() {
+        // Only show alerts when clicking the "Ajouter" button
+
+        // Check if reservation ID is selected
+        if (comboReservationId.getValue() == null) {
+            showAlert("Erreur", "Veuillez sélectionner un ID de réservation.");
+            return;  // This will stop further execution if the condition fails
+        }
+
+        // Check if the amount field is empty
+        if (txtAmount.getText().isEmpty()) {
+            showAlert("Erreur", "Le montant ne peut pas être vide.");
+            return;
+        }
+
+        // Parse the amount entered and check for valid number format
+        double amount;
         try {
-            int reservationId = Integer.parseInt(txtReservationId.getText());
-            double amount = Double.parseDouble(txtAmount.getText());
-            Date date = formatter.parse(txtDate.getText());
+            amount = Double.parseDouble(txtAmount.getText());
+        } catch (NumberFormatException e) {
+            showAlert("Erreur", "Le montant doit être un nombre valide.");
+            return;
+        }
 
-            Facture facture = new Facture(reservationId, amount, new java.sql.Date(date.getTime()).toLocalDate());
+        // Check if the date is selected
+        if (datePicker.getValue() == null) {
+            showAlert("Erreur", "Veuillez sélectionner une date.");
+            return;
+        }
 
+        // All fields are valid, proceed with facture creation
+        Date date = Date.valueOf(datePicker.getValue());
+
+        // Correcting the constructor call with intValue() for reservationId
+        Facture facture = new Facture(comboReservationId.getValue().intValue(), amount, date.toLocalDate());
+
+        try {
+            // Add the facture
             service.ajouter(facture);
-            System.out.println("Facture added successfully!");
+            System.out.println("Facture ajoutée avec succès!");
+
+            // Optionally close the window after adding
+            ((Stage) txtAmount.getScene().getWindow()).close();
 
         } catch (SQLException e) {
-            System.out.println("Error adding facture: " + e.getMessage());
-        } catch (ParseException e) {
-            System.out.println("Invalid date format: " + e.getMessage());
-        } catch (Exception e) {
-            System.out.println("Invalid input: " + e.getMessage());
+            showAlert("Erreur", "Erreur lors de l'ajout de la facture: " + e.getMessage());
         }
     }
 
-    @FXML
-    void update(ActionEvent event) {
-        try {
-            int reservationId = Integer.parseInt(txtReservationId.getText());
-            double amount = Double.parseDouble(txtAmount.getText());
-            Date date = formatter.parse(txtDate.getText());
-
-            Facture facture = new Facture(reservationId, amount, new java.sql.Date(date.getTime()).toLocalDate());
-
-            service.update(facture);
-            System.out.println("Facture updated successfully!");
-
-        } catch (SQLException e) {
-            System.out.println("Error updating facture: " + e.getMessage());
-        } catch (ParseException e) {
-            System.out.println("Invalid date format: " + e.getMessage());
-        } catch (Exception e) {
-            System.out.println("Invalid input: " + e.getMessage());
-        }
+    // Helper method to show French alerts
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
     @FXML
-    void delete(ActionEvent event) {
-        try {
-            int reservationId = Integer.parseInt(txtReservationId.getText());
-
-            Facture factureToDelete = new Facture();
-            factureToDelete.setReservationId(reservationId);
-
-            service.supprimer(factureToDelete);
-            System.out.println("Facture deleted successfully!");
-
-        } catch (SQLException e) {
-            System.out.println("Error deleting facture: " + e.getMessage());
-        } catch (Exception e) {
-            System.out.println("Invalid input: " + e.getMessage());
-        }
+    void retour(ActionEvent event) {
+        // Close the current window and go back to the previous screen
+        ((Stage) txtAmount.getScene().getWindow()).close();
     }
 }

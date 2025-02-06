@@ -2,7 +2,13 @@ package Service;
 
 import Entite.Facture;
 import Utils.DataSource;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -79,4 +85,56 @@ public class ServiceFacture implements IService<Facture> {
         }
         return facturesList;
     }
+
+    // New method to generate a PDF of the Facture using Apache PDFBox
+    public void generatePdf(Facture facture, String outputPath) throws IOException {
+        PDDocument document = new PDDocument();
+        PDPage page = new PDPage();
+        document.addPage(page);
+
+        PDPageContentStream contentStream = new PDPageContentStream(document, page);
+        contentStream.beginText();
+        contentStream.setFont(PDType1Font.HELVETICA_BOLD, 12);
+        contentStream.newLineAtOffset(100, 750); // Position to start writing
+
+        // Add content to the PDF
+        contentStream.showText("Facture Détails");
+        contentStream.newLine();
+        contentStream.showText("ID Réservation: " + facture.getReservationId());
+        contentStream.newLine();
+        contentStream.showText("Montant: " + facture.getAmount());
+        contentStream.newLine();
+        contentStream.showText("Date: " + facture.getDate());
+
+        contentStream.endText();
+        contentStream.close();
+
+        // Save the document
+        document.save(outputPath);
+        document.close();
+    }
+
+    // Method to save the PDF
+    public void savePdf(Facture facture) {
+        try {
+            String outputPath = "Facture_" + facture.getId() + ".pdf";
+            generatePdf(facture, outputPath);
+            System.out.println("PDF generated at: " + outputPath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public List<Integer> getReservationIds() throws SQLException {
+        List<Integer> reservationIds = new ArrayList<>();
+        String req = "SELECT DISTINCT reservation_id FROM invoices";  // Modify query if needed
+        try (Statement st = con.createStatement()) {
+            ResultSet rs = st.executeQuery(req);
+            while (rs.next()) {
+                reservationIds.add(rs.getInt("reservation_id"));
+            }
+        }
+        return reservationIds;
+    }
+
 }

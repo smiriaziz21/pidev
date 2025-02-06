@@ -2,15 +2,13 @@ package Controllers;
 
 import Entite.Facture;
 import Service.ServiceFacture;
-
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 import java.sql.SQLException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class FactureModifierController {
 
@@ -19,42 +17,82 @@ public class FactureModifierController {
     @FXML
     private TextField txtAmount;
     @FXML
-    private TextField txtDate;
+    private DatePicker dpDate;
 
     private Facture currentFacture;
     private final ServiceFacture service = new ServiceFacture();
 
-    private static final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-
     public void initData(Facture facture) {
         this.currentFacture = facture;
-
         txtReservationId.setText(String.valueOf(facture.getReservationId()));
+        txtReservationId.setDisable(true);
+
         txtAmount.setText(String.valueOf(facture.getAmount()));
-        txtDate.setText(formatter.format(facture.getDate()));
+
+        if (facture.getDate() != null) {
+            dpDate.setValue(facture.getDate());
+        } else {
+            dpDate.setValue(null);
+        }
     }
 
     @FXML
     private void updateFacture() {
+        if (txtAmount.getText().isEmpty()) {
+            showAlert("Erreur", "Le montant ne peut pas être vide.");
+            return;
+        }
+
+        double amount;
         try {
-            currentFacture.setReservationId(Integer.parseInt(txtReservationId.getText()));
-            currentFacture.setAmount(Double.parseDouble(txtAmount.getText()));
-            Date date = formatter.parse(txtDate.getText());
-            currentFacture.setDate(new java.sql.Date(date.getTime()).toLocalDate());
+            amount = Double.parseDouble(txtAmount.getText());
+        } catch (NumberFormatException e) {
+            showAlert("Erreur", "Le montant doit être un nombre valide.");
+            return;
+        }
 
+        if (dpDate.getValue() == null) {
+            showAlert("Erreur", "Veuillez sélectionner une date.");
+            return;
+        }
+
+        try {
+            currentFacture.setAmount(amount);
+            currentFacture.setDate(dpDate.getValue());
             service.update(currentFacture);
-
             Stage stage = (Stage) txtReservationId.getScene().getWindow();
             stage.close();
         } catch (SQLException e) {
             e.printStackTrace();
-        } catch (ParseException e) {
-            e.printStackTrace();
+            showAlert("Erreur", "Erreur lors de la mise à jour de la facture: " + e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
+            showAlert("Erreur", "Erreur inattendue: " + e.getMessage());
         }
     }
 
+    @FXML
+    private void generateFacture() {
+        try {
+            // Assuming service.savePdf() generates and saves the PDF
+            service.savePdf(currentFacture);
+            showAlert("Succès", "Le PDF a été généré avec succès.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Erreur lors de la génération du PDF: " + e.getMessage());
+        }
+    }
+
+
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    @FXML
     public void goBack(javafx.event.ActionEvent actionEvent) {
         Stage stage = (Stage) txtReservationId.getScene().getWindow();
         stage.close();

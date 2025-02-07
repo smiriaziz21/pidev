@@ -1,7 +1,7 @@
 package Controllers;
 
-import Entite.Facture;
-import Service.ServiceFacture;
+import Entite.Feedback;
+import Service.ServiceFeedback;  // You'll need to create this service for feedback
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -24,25 +24,31 @@ import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
-public class FactureAfficheController implements Initializable {
+public class FeedbackAfficheController implements Initializable {
 
     @FXML
-    private TableView<Facture> tablev;
+    private TableView<Feedback> tablev;
 
     @FXML
-    private TableColumn<Facture, Integer> colId;
+    private TableColumn<Feedback, Integer> colId;
 
     @FXML
-    private TableColumn<Facture, Integer> colReservationId;
+    private TableColumn<Feedback, Integer> colClientId;
 
     @FXML
-    private TableColumn<Facture, Double> colAmount;
+    private TableColumn<Feedback, Integer> colEventId;
 
     @FXML
-    private TableColumn<Facture, String> colDate;
+    private TableColumn<Feedback, String> colComment;
 
     @FXML
-    private TableColumn<Facture, Void> colActions;
+    private TableColumn<Feedback, Integer> colRating;
+
+    @FXML
+    private TableColumn<Feedback, String> colDate;
+
+    @FXML
+    private TableColumn<Feedback, Void> colActions;
 
     @FXML
     private Button btnAjouter;
@@ -55,32 +61,35 @@ public class FactureAfficheController implements Initializable {
     @FXML
     private DatePicker dateFin;    // End Date Picker
 
-    private final ServiceFacture service = new ServiceFacture();
-    private ObservableList<Facture> facturesList = FXCollections.observableArrayList();
+    private final ServiceFeedback service = new ServiceFeedback();
+    private ObservableList<Feedback> feedbackList = FXCollections.observableArrayList();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        loadFactures();
+        loadFeedbacks();
         setupActionButtons();
 
         btnAjouter.setOnMouseEntered(event -> btnAjouter.setStyle("-fx-background-color: #2e7d32; -fx-text-fill: white;"));
         btnAjouter.setOnMouseExited(event -> btnAjouter.setStyle("-fx-background-color: #43a047; -fx-text-fill: white;"));
 
         // Add listeners to filters
-        searchField.textProperty().addListener((observable, oldValue, newValue) -> filterFactures());
-        dateDebut.valueProperty().addListener((observable, oldValue, newValue) -> filterFactures());  // Add listener for start date
-        dateFin.valueProperty().addListener((observable, oldValue, newValue) -> filterFactures());    // Add listener for end date
+        searchField.textProperty().addListener((observable, oldValue, newValue) -> filterFeedbacks());
+        dateDebut.valueProperty().addListener((observable, oldValue, newValue) -> filterFeedbacks());  // Add listener for start date
+        dateFin.valueProperty().addListener((observable, oldValue, newValue) -> filterFeedbacks());    // Add listener for end date
     }
 
-    // Method to load all factures from the service
-    private void loadFactures() {
+    // Method to load all feedbacks from the service
+    private void loadFeedbacks() {
         try {
-            facturesList.setAll(service.getAll());
-            tablev.setItems(facturesList);
+            feedbackList.setAll(service.getAll());
+            System.out.println("Feedback List Size: " + feedbackList.size()); // Debugging line
+            tablev.setItems(feedbackList);
 
             colId.setCellValueFactory(cellData -> cellData.getValue().idProperty().asObject());
-            colReservationId.setCellValueFactory(cellData -> cellData.getValue().reservationIdProperty().asObject());
-            colAmount.setCellValueFactory(cellData -> cellData.getValue().amountProperty().asObject());
+            colClientId.setCellValueFactory(cellData -> cellData.getValue().clientIdProperty().asObject());
+            colEventId.setCellValueFactory(cellData -> cellData.getValue().eventIdProperty().asObject());
+            colComment.setCellValueFactory(cellData -> cellData.getValue().commentProperty());
+            colRating.setCellValueFactory(cellData -> cellData.getValue().ratingProperty().asObject());
 
             // Format date as string
             colDate.setCellValueFactory(cellData -> {
@@ -95,24 +104,25 @@ public class FactureAfficheController implements Initializable {
         }
     }
 
-    // Method to filter factures based on search and date range
-    private void filterFactures() {
+    // Method to filter feedbacks based on search and date range
+    private void filterFeedbacks() {
         String keyword = searchField.getText().toLowerCase();
         LocalDate startDate = dateDebut.getValue();
         LocalDate endDate = dateFin.getValue();
 
-        ObservableList<Facture> filteredList = facturesList.stream()
-                .filter(facture -> {
+        ObservableList<Feedback> filteredList = feedbackList.stream()
+                .filter(feedback -> {
                     // Check keyword in various properties
                     boolean matchesKeyword = keyword.isEmpty() ||
-                            String.valueOf(facture.getId()).contains(keyword) ||
-                            String.valueOf(facture.getReservationId()).contains(keyword) ||
-                            String.valueOf(facture.getAmount()).contains(keyword) ||
-                            (facture.getDate() != null && facture.getDate().toString().contains(keyword));
+                            String.valueOf(feedback.getId()).contains(keyword) ||
+                            String.valueOf(feedback.getClientId()).contains(keyword) ||
+                            String.valueOf(feedback.getEventId()).contains(keyword) ||
+                            feedback.getComment().toLowerCase().contains(keyword) ||
+                            (feedback.getDate() != null && feedback.getDate().toString().contains(keyword));
 
                     // Check if date is within the selected range
-                    boolean matchesDate = (startDate == null || facture.getDate() != null && !facture.getDate().isBefore(startDate)) &&
-                            (endDate == null || facture.getDate() != null && !facture.getDate().isAfter(endDate));
+                    boolean matchesDate = (startDate == null || feedback.getDate() != null && !feedback.getDate().isBefore(startDate)) &&
+                            (endDate == null || feedback.getDate() != null && !feedback.getDate().isAfter(endDate));
 
                     return matchesKeyword && matchesDate;
                 })
@@ -123,20 +133,20 @@ public class FactureAfficheController implements Initializable {
 
     // Method to setup actions for Update/Delete buttons
     private void setupActionButtons() {
-        Callback<TableColumn<Facture, Void>, TableCell<Facture, Void>> cellFactory = param -> new TableCell<>() {
+        Callback<TableColumn<Feedback, Void>, TableCell<Feedback, Void>> cellFactory = param -> new TableCell<>() {
             private final Button btnUpdate = new Button("Update");
             private final Button btnDelete = new Button("Delete");
 
             {
                 // Update button action
                 btnUpdate.setOnAction(event -> {
-                    Facture facture = getTableView().getItems().get(getIndex());
-                    openUpdateWindow(facture);
+                    Feedback feedback = getTableView().getItems().get(getIndex());
+                    openUpdateWindow(feedback);
                 });
                 // Delete button action
                 btnDelete.setOnAction(event -> {
-                    Facture facture = getTableView().getItems().get(getIndex());
-                    deleteFacture(facture);
+                    Feedback feedback = getTableView().getItems().get(getIndex());
+                    deleteFeedback(feedback);
                 });
 
                 // Button styles
@@ -159,19 +169,19 @@ public class FactureAfficheController implements Initializable {
         colActions.setCellFactory(cellFactory);
     }
 
-    // Method to handle facture deletion
-    private void deleteFacture(Facture facture) {
+    // Method to handle feedback deletion
+    private void deleteFeedback(Feedback feedback) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Confirmation");
-        alert.setHeaderText("Are you sure you want to delete this facture?");
+        alert.setHeaderText("Are you sure you want to delete this feedback?");
         alert.setContentText("This action cannot be undone!");
 
         alert.showAndWait().ifPresent(response -> {
             if (response == ButtonType.OK) {
                 try {
-                    service.supprimer(facture);
-                    facturesList.remove(facture);
-                    filterFactures(); // Update the list after deletion
+                    service.supprimer(feedback);
+                    feedbackList.remove(feedback);
+                    filterFeedbacks(); // Update the list after deletion
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
@@ -179,42 +189,42 @@ public class FactureAfficheController implements Initializable {
         });
     }
 
-    // Method to open the update window for a selected facture
-    private void openUpdateWindow(Facture facture) {
+    // Method to open the update window for a selected feedback
+    private void openUpdateWindow(Feedback feedback) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FactureModifier.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FeedbackModifier.fxml"));
             Parent root = loader.load();
 
-            FactureModifierController controller = loader.getController();
-            controller.initData(facture);
+            FeedbackModifierController controller = loader.getController();
+            controller.initData(feedback);
 
             Stage stage = new Stage();
             stage.setScene(new Scene(root));
             stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setTitle("Update Facture");
+            stage.setTitle("Update Feedback");
             stage.showAndWait();
 
-            loadFactures();
-            filterFactures(); // Ensure the list is updated after modification
+            loadFeedbacks();
+            filterFeedbacks(); // Ensure the list is updated after modification
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    // Method to open the add window for a new facture
+    // Method to open the add window for a new feedback
     public void openAddWindow() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FactureAjouter.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FeedbackAjouter.fxml"));
             Parent root = loader.load();
 
             Stage stage = new Stage();
             stage.setScene(new Scene(root));
             stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setTitle("Add Facture");
+            stage.setTitle("Add Feedback");
             stage.showAndWait();
 
-            loadFactures();
-            filterFactures(); // Update the list after adding
+            loadFeedbacks();
+            filterFeedbacks(); // Update the list after adding
         } catch (Exception e) {
             e.printStackTrace();
         }

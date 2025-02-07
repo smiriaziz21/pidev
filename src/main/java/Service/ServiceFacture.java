@@ -5,6 +5,7 @@ import Utils.DataSource;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 
 import java.io.FileOutputStream;
@@ -89,30 +90,108 @@ public class ServiceFacture implements IService<Facture> {
     // New method to generate a PDF of the Facture using Apache PDFBox
     public void generatePdf(Facture facture, String outputPath) throws IOException {
         PDDocument document = new PDDocument();
-        PDPage page = new PDPage();
+        PDPage page = new PDPage(PDRectangle.A4); // Standard A4 format
         document.addPage(page);
 
         PDPageContentStream contentStream = new PDPageContentStream(document, page);
+        contentStream.setFont(PDType1Font.HELVETICA, 12);
+
+        float marginLeft = 30;
+        float startY = 750; // Starting position for the text
+
+        // FACTURE#ID (Centré et Agrandi)
         contentStream.beginText();
-        contentStream.setFont(PDType1Font.HELVETICA_BOLD, 12);
-        contentStream.newLineAtOffset(100, 750); // Position to start writing
-
-        // Add content to the PDF
-        contentStream.showText("Facture Détails");
-        contentStream.newLine();
-        contentStream.showText("ID Réservation: " + facture.getReservationId());
-        contentStream.newLine();
-        contentStream.showText("Montant: " + facture.getAmount());
-        contentStream.newLine();
-        contentStream.showText("Date: " + facture.getDate());
-
+        contentStream.setFont(PDType1Font.HELVETICA_BOLD, 20); // Taille augmentée
+        float textWidth = PDType1Font.HELVETICA_BOLD.getStringWidth("FACTURE#" + facture.getReservationId()) / 1000 * 20;
+        float centerX = (PDRectangle.A4.getWidth() - textWidth) / 2; // Centrage horizontal
+        contentStream.newLineAtOffset(centerX, startY);
+        contentStream.showText("FACTURE#" + facture.getReservationId());
         contentStream.endText();
-        contentStream.close();
+        startY -= 30; // Plus d'espace après le titre
 
-        // Save the document
+
+        // Invoice Number, Date, and Client Info
+        contentStream.setFont(PDType1Font.HELVETICA, 12);
+        drawText(contentStream, marginLeft, startY, "Numéro de Facture : " + facture.getReservationId());
+        startY -= 20;
+        drawText(contentStream, marginLeft, startY, "Date : " + facture.getDate());
+        startY -= 20;
+        drawText(contentStream, marginLeft, startY, "Client : Mohamed Iheb Ounalli");
+        startY -= 20;
+        drawText(contentStream, marginLeft, startY, "Adresse : Djerba, Tunisia");
+        startY -= 40;
+
+        // Invoice Details (Amount, Reservation ID, Payment Mode)
+        drawText(contentStream, marginLeft, startY, "Montant : " + facture.getAmount() + " €");
+        startY -= 20;
+        drawText(contentStream, marginLeft, startY, "Réservation : " + facture.getReservationId());
+        startY -= 20;
+        drawText(contentStream, marginLeft, startY, "Mode de Paiement : Carte bancaire");
+        startY -= 40;
+
+        // Description
+        drawText(contentStream, marginLeft, startY, "Description");
+        startY -= 20;
+        drawText(contentStream, marginLeft, startY, "Paiement pour l'événement de gestion de factures,");
+        startY -= 15;
+        drawText(contentStream, marginLeft, startY, "effectué le 07/02/2025.");
+        startY -= 30;
+
+        // Conditions de paiement
+        drawText(contentStream, marginLeft, startY, "Conditions de Paiement :");
+        startY -= 20;
+        drawText(contentStream, marginLeft, startY, "- Le paiement doit être effectué avant le 31/02/2025.");
+        startY -= 15;
+        drawText(contentStream, marginLeft, startY, "- En cas de retard, la réservation doit être annulée.");
+        startY -= 30;
+// Footer (Signature à droite)
+        String signatureText = "Signature";
+        float signatureWidth = PDType1Font.HELVETICA.getStringWidth(signatureText) / 1000 * 12;
+        float rightX = PDRectangle.A4.getWidth() - signatureWidth - 50; // Position à droite avec une marge
+        drawText(contentStream, rightX, startY, signatureText);
+
+        // Close stream and save the document
+        contentStream.close();
         document.save(outputPath);
         document.close();
     }
+
+    // Utility function to draw text on the page
+    private void drawText(PDPageContentStream contentStream, float x, float y, String text) throws IOException {
+        contentStream.beginText();
+        contentStream.newLineAtOffset(x, y);
+        contentStream.showText(text);
+        contentStream.endText();
+    }
+
+    // Utility function to wrap text to a specified length
+    private List<String> wrapText(String text, int maxLength) {
+        List<String> lines = new ArrayList<>();
+        String[] words = text.split(" ");
+        StringBuilder currentLine = new StringBuilder();
+
+        for (String word : words) {
+            if (currentLine.length() + word.length() + 1 > maxLength) {
+                lines.add(currentLine.toString());
+                currentLine = new StringBuilder();
+            }
+            currentLine.append(word).append(" ");
+        }
+        lines.add(currentLine.toString().trim());
+        return lines;
+    }
+
+    // Helper method to draw a rectangle
+    private void drawRectangle(PDPageContentStream contentStream, float x, float y, float width, float height) throws IOException {
+        contentStream.moveTo(x, y);
+        contentStream.lineTo(x + width, y);
+        contentStream.lineTo(x + width, y - height);
+        contentStream.lineTo(x, y - height);
+        contentStream.closePath();
+        contentStream.stroke();
+    }
+
+
 
     // Method to save the PDF
     public void savePdf(Facture facture) {

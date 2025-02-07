@@ -16,11 +16,9 @@ public class DashboardController {
     @FXML private Button btnModifierHotel;
     @FXML private Button btnSupprimerHotel;
     @FXML private Button btnAjouterChambre;
-    @FXML private Button btnModifierChambre;
-    @FXML private Button btnSupprimerChambre;
     @FXML private AnchorPane mainContent;
 
-    private int currentResponsableId = 1; // À remplacer par la logique d'authentification
+    private int currentResponsableId = 1; // static badalha
 
     @FXML
     public void initialize() {
@@ -28,15 +26,10 @@ public class DashboardController {
     }
 
     private void configureButtonActions() {
-        // Gestion Hôtels
         btnAjouterHotel.setOnAction(e -> loadPage("ajouterhotel.fxml"));
         btnModifierHotel.setOnAction(e -> loadDataPage("modifierhotel.fxml", "hotel"));
         btnSupprimerHotel.setOnAction(e -> loadPage("suprimerhotel.fxml"));
-
-        // Gestion Chambres
         btnAjouterChambre.setOnAction(e -> loadPage("ajoutchambre.fxml"));
-        btnModifierChambre.setOnAction(e -> loadDataPage("modifierchambre.fxml", "chambre"));
-        btnSupprimerChambre.setOnAction(e -> loadPage("SupprimerRoom.fxml"));
     }
 
     private void loadPage(String fxmlFile) {
@@ -54,20 +47,9 @@ public class DashboardController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/" + fxmlFile));
             Parent root = loader.load();
 
-            switch(type) {
-                case "hotel":
-                    if(loader.getController() instanceof ModifierHotelController) {
-                        ((ModifierHotelController)loader.getController())
-                                .setResponsableId(currentResponsableId);
-                    }
-                    break;
-
-                case "chambre":
-                    if(loader.getController() instanceof ModifierRoomController) {
-                        ((ModifierRoomController)loader.getController())
-                                .setResponsableId(currentResponsableId);
-                    }
-                    break;
+            if(loader.getController() instanceof ModifierHotelController) {
+                ((ModifierHotelController)loader.getController())
+                        .setResponsableId(currentResponsableId);
             }
 
             mainContent.getChildren().setAll(root);
@@ -86,7 +68,6 @@ public class DashboardController {
         alert.showAndWait();
     }
 
-    // Méthode pour mettre à jour l'ID responsable (à appeler après authentification)
     public void setCurrentResponsableId(int id) {
         this.currentResponsableId = id;
     }

@@ -34,14 +34,14 @@ public class AjouterHotelController {
         }
 
         try {
-            // Création d'un nouvel hôtel
+
             String nom = txtNom.getText();
             String localisation = txtLocalisation.getText();
             int idResponsable = 1;
 
             Hotel hotel = new Hotel(nom, localisation, idResponsable);
 
-            // Ajout via le service
+
             ServiceHotel serviceHotel = new ServiceHotel();
             serviceHotel.ajouter(hotel);
 
@@ -50,7 +50,7 @@ public class AjouterHotelController {
                     "Hôtel ajouté avec succès",
                     "L'hôtel a été enregistré dans la base de données");
 
-            // Réinitialisation des champs
+
             txtNom.clear();
             txtLocalisation.clear();
 

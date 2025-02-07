@@ -6,7 +6,6 @@ public class Room {
     private String roomNumber;
     private int capacity;
 
-    // Constructeurs
     public Room(int hotelId, String roomNumber, int capacity) {
         this.hotelId = hotelId;
         this.roomNumber = roomNumber;
@@ -20,7 +19,6 @@ public class Room {
         this.capacity = capacity;
     }
 
-    // Getters et Setters
     public int getId() {
         return id;
     }

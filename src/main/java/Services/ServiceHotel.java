@@ -50,6 +50,7 @@ public class ServiceHotel implements IService<Hotel> {
 
 
 
+
     public List<Hotel> getAllByResponsableId(int responsableId) throws SQLException {
         List<Hotel> list = new ArrayList<>();
         String query = "SELECT * FROM hotels WHERE responsable_hotel_id = ?";

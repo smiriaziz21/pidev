@@ -18,8 +18,6 @@ public class Suprimerchambre {
     @FXML
     private TableView<Room> roomTable;
 
-
-
     @FXML
     private TableColumn<Room, Integer> colHotelId;
 
@@ -35,6 +33,8 @@ public class Suprimerchambre {
     private ServiceRoom serviceRoom;
     private ObservableList<Room> roomList;
 
+    private int responsableId = 1; // Remplacez avec l'ID du responsable connecté
+
     public Suprimerchambre() {
         serviceRoom = new ServiceRoom();
     }
@@ -42,11 +42,9 @@ public class Suprimerchambre {
     @FXML
     public void initialize() {
         setupTable();
-        loadRooms();
     }
 
     private void setupTable() {
-
         colHotelId.setCellValueFactory(new PropertyValueFactory<>("hotelId"));
         colRoomNumber.setCellValueFactory(new PropertyValueFactory<>("roomNumber"));
         colCapacity.setCellValueFactory(new PropertyValueFactory<>("capacity"));
@@ -56,12 +54,18 @@ public class Suprimerchambre {
         });
     }
 
-    private int responsableId = 1; // Remplace 1 par l'ID du responsable connecté
+    // Méthode pour recevoir l'ID de l'hôtel et charger les chambres
+    public void setHotelId(int hotelId) {
+        System.out.println("ID de l'hôtel reçu : " + hotelId);
+        loadRooms(hotelId);
+    }
 
-    private void loadRooms() {
+    private void loadRooms(int hotelId) {
         try {
-            roomList = FXCollections.observableArrayList(serviceRoom.getRoomsByResponsableId(responsableId));
+            System.out.println("Chargement des chambres pour l'hôtel ID: " + hotelId);
+            roomList = FXCollections.observableArrayList(serviceRoom.getRoomsByResponsableId(responsableId, hotelId));
             roomTable.setItems(roomList);
+            System.out.println("Nombre de chambres trouvées : " + roomList.size());
         } catch (SQLException e) {
             showAlert("Erreur", "Impossible de charger les chambres : " + e.getMessage(), Alert.AlertType.ERROR);
         }

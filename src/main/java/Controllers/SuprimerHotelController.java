@@ -5,12 +5,17 @@ import Services.ServiceHotel;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.sql.SQLException;
 
 public class SuprimerHotelController {
@@ -27,17 +32,16 @@ public class SuprimerHotelController {
     @FXML
     private TableColumn<Hotel, String> colLocation;
 
-  //  @FXML
-  //  private TableColumn<Hotel, Integer> colResponsable;
-
     @FXML
     private Button deleteButton;
+
+    @FXML
+    private Button goToRoomButton;
 
     private ServiceHotel serviceHotel;
 
     private ObservableList<Hotel> hotelList;
 
-    // Constructeur corrigé
     public SuprimerHotelController() {
         serviceHotel = new ServiceHotel();
     }
@@ -52,13 +56,13 @@ public class SuprimerHotelController {
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
         colName.setCellValueFactory(new PropertyValueFactory<>("name"));
         colLocation.setCellValueFactory(new PropertyValueFactory<>("location"));
-       // colResponsable.setCellValueFactory(new PropertyValueFactory<>("responsableHotelId"));
 
         hotelTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             deleteButton.setDisable(newSelection == null);
         });
     }
-int id=1 ;
+
+    int id = 1;
 
     private void loadHotels() {
         try {
@@ -78,7 +82,6 @@ int id=1 ;
         }
 
         try {
-            // Assurez-vous que la suppression dans la base de données est réussie
             serviceHotel.supprimer(selectedHotel);
             hotelList.remove(selectedHotel);  // Retirer l'hôtel de la liste observable
             showAlert("Success", "Hotel deleted successfully!", Alert.AlertType.INFORMATION);
@@ -86,6 +89,37 @@ int id=1 ;
             showAlert("Error", "Could not delete hotel: " + e.getMessage(), Alert.AlertType.ERROR);
         }
     }
+
+    // Méthode pour naviguer vers SupprimerRoom.fxml
+
+    @FXML
+    private void goToSupprimerRoom() {
+        Hotel selectedHotel = hotelTable.getSelectionModel().getSelectedItem();
+        if (selectedHotel == null) {
+            showAlert("Warning", "No hotel selected!", Alert.AlertType.WARNING);
+            return;
+        }
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/SupprimerRoom.fxml"));
+            Parent root = loader.load();
+
+            // Passer l'ID de l'hôtel sélectionné à Suprimerchambre
+            Suprimerchambre chambreController = loader.getController();
+            chambreController.setHotelId(selectedHotel.getId()); // L'id de l'hôtel
+
+            // Ouvrir une nouvelle fenêtre sans fermer le dashboard
+            Stage stage = new Stage();
+            stage.setTitle("Supprimer Chambre");
+            stage.setScene(new Scene(root));
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Error", "Could not load SuprimerRoom.fxml: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
 
     private void showAlert(String title, String message, Alert.AlertType alertType) {
         Alert alert = new Alert(alertType);

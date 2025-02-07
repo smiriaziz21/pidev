@@ -4,17 +4,18 @@ import Entites.Hotel;
 import Services.ServiceHotel;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import javafx.util.Callback;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -33,6 +34,9 @@ public class ModifierHotelController {
     private TableColumn<Hotel, Void> colAction;
 
     @FXML
+    private TableColumn<Hotel, Void> colModifyRoom;
+
+    @FXML
     private TableView<Hotel> tableView;
 
     private ServiceHotel serviceHotel = new ServiceHotel();
@@ -42,6 +46,7 @@ public class ModifierHotelController {
     public void initialize() {
         setupTableColumns();
         setupActionColumn();
+        setupModifyRoomColumn();
     }
 
     public void setResponsableId(int responsableId) {
@@ -83,55 +88,95 @@ public class ModifierHotelController {
         });
     }
 
+    private void setupModifyRoomColumn() {
+        colModifyRoom.setCellFactory(new Callback<>() {
+            @Override
+            public TableCell<Hotel, Void> call(final TableColumn<Hotel, Void> param) {
+                return new TableCell<>() {
+                    private final Button modifyRoomBtn = new Button("Modifier Chambre");
+
+                    {
+                        modifyRoomBtn.setOnAction(event -> {
+                            Hotel hotel = getTableView().getItems().get(getIndex());
+                            openModifierChambre(hotel.getId());
+                        });
+                    }
+
+                    @Override
+                    protected void updateItem(Void item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setGraphic(null);
+                        } else {
+                            setGraphic(modifyRoomBtn);
+                        }
+                    }
+                };
+            }
+        });
+    }
+
     private void loadHotels() {
         try {
             List<Hotel> hotels = serviceHotel.getAllByResponsableId(currentResponsableId);
             ObservableList<Hotel> observableList = FXCollections.observableArrayList(hotels);
             tableView.setItems(observableList);
         } catch (SQLException e) {
-            showAlert("Erreur", "Erreur de chargement",
-                    e.getMessage(), AlertType.ERROR);
+            showAlert("Erreur", "Erreur de chargement", e.getMessage(), Alert.AlertType.ERROR);
         }
     }
 
     private void handleModifyHotel(Hotel hotel) {
-        // Création de la fenêtre de modification
         TextField nameField = new TextField(hotel.getName());
         TextField locationField = new TextField(hotel.getLocation());
 
-        Alert editDialog = new Alert(AlertType.CONFIRMATION);
-        editDialog.setTitle("Modifier Hôtel");
-        editDialog.setHeaderText("Modification de l'hôtel : " );
-        editDialog.getDialogPane().setContent(new javafx.scene.layout.VBox(5,
-                new javafx.scene.control.Label("Nom:"), nameField,
-                new javafx.scene.control.Label("Localisation:"), locationField
+        Alert editDialog = new Alert(Alert.AlertType.CONFIRMATION);
+        editDialog.setTitle("Modifier Hotel");
+        editDialog.setHeaderText("Modification de l'hôtel : ");
+        editDialog.getDialogPane().setContent(new VBox(5,
+                new Label("Nom:"), nameField,
+                new Label("Localisation:"), locationField
         ));
 
         editDialog.showAndWait().ifPresent(response -> {
-            if (response == javafx.scene.control.ButtonType.OK) {
+            if (response == ButtonType.OK) {
                 try {
                     hotel.setName(nameField.getText());
                     hotel.setLocation(locationField.getText());
                     serviceHotel.update(hotel);
-                    loadHotels(); // Rafraîchir les données
-                    showAlert("Succès", "Modification réussie",
-                            "Hôtel mis à jour avec succès", AlertType.INFORMATION);
+                    loadHotels();
+                    showAlert("Succès", "Modification réussie", "Hôtel mis à jour avec succès", Alert.AlertType.INFORMATION);
                 } catch (SQLException e) {
-                    showAlert("Erreur", "Échec de modification",
-                            e.getMessage(), AlertType.ERROR);
+                    showAlert("Erreur", "Échec de modification", e.getMessage(), Alert.AlertType.ERROR);
                 }
             }
         });
     }
 
-    private void showAlert(String title, String header, String content, AlertType type) {
+    private void openModifierChambre(int hotelId) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/modifierchambre.fxml"));
+            Parent root = loader.load();
+
+            // Passer l'ID de l'hôtel à ModifierChambreController
+            ModifierRoomController controller = loader.getController();
+            controller.setHotelId(hotelId);
+
+            Stage stage = new Stage();
+            stage.setTitle("Modifier Chambres");
+            stage.setScene(new Scene(root));
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void showAlert(String title, String header, String content, Alert.AlertType type) {
         Alert alert = new Alert(type);
         alert.setTitle(title);
         alert.setHeaderText(header);
         alert.setContentText(content);
         alert.showAndWait();
     }
-
-
-
 }

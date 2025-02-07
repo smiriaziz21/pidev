@@ -15,7 +15,6 @@
                 <TableColumn fx:id="colCapacity" prefWidth="100.0" text="capacité" />
             </columns>
         </TableView>
-
         <!-- Button to delete selected room -->
         <Button fx:id="deleteButton" layoutX="250.0" layoutY="370.0" mnemonicParsing="false" onAction="#deleteRoom" text="Delete" disable="true" />
     </children>

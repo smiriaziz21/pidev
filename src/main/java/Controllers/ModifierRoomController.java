@@ -17,8 +17,6 @@ public class ModifierRoomController {
     @FXML
     private TableView<Room> tableView;
 
-
-
     @FXML
     private TableColumn<Room, Integer> colHotelId;
 
@@ -32,7 +30,8 @@ public class ModifierRoomController {
     private TableColumn<Room, Void> colAction;
 
     private ServiceRoom serviceRoom = new ServiceRoom();
-    private int currentResponsableId;
+    private int currentResponsableId = 1;
+    private int idhotel;
 
     @FXML
     public void initialize() {
@@ -40,13 +39,13 @@ public class ModifierRoomController {
         setupActionColumn();
     }
 
-   public void setResponsableId(int responsableId) {
-       this.currentResponsableId = responsableId;
-       loadRooms();
+    public void setHotelId(int hotelId) {
+        this.idhotel = hotelId;
+        System.out.println("ID de l'hôtel reçu : " + hotelId);
+        loadRooms(); // Charger les chambres pour l'hôtel sélectionné
     }
 
     private void setupTableColumns() {
-
         colHotelId.setCellValueFactory(new PropertyValueFactory<>("hotelId"));
         colRoomNumber.setCellValueFactory(new PropertyValueFactory<>("roomNumber"));
         colCapacity.setCellValueFactory(new PropertyValueFactory<>("capacity"));
@@ -82,23 +81,21 @@ public class ModifierRoomController {
 
     private void loadRooms() {
         try {
-            List<Room> rooms = serviceRoom.getRoomsByResponsableId(currentResponsableId);
+            List<Room> rooms = serviceRoom.getRoomsByResponsableId(currentResponsableId, idhotel);
             ObservableList<Room> observableList = FXCollections.observableArrayList(rooms);
             tableView.setItems(observableList);
         } catch (SQLException e) {
-            showAlert("Erreur", "Erreur de chargement",
-                    e.getMessage(), Alert.AlertType.ERROR);
+            showAlert("Erreur", "Erreur de chargement", e.getMessage(), Alert.AlertType.ERROR);
         }
     }
 
     private void handleModifyRoom(Room room) {
-        // Champs de modification
         TextField roomNumberField = new TextField(room.getRoomNumber());
         Spinner<Integer> capacitySpinner = new Spinner<>(1, 10, room.getCapacity());
 
         Alert editDialog = new Alert(Alert.AlertType.CONFIRMATION);
         editDialog.setTitle("Modifier Chambre");
-        editDialog.setHeaderText("Modification de la chambre : " );
+        editDialog.setHeaderText("Modification de la chambre : ");
         editDialog.getDialogPane().setContent(new javafx.scene.layout.VBox(5,
                 new javafx.scene.control.Label("Numéro de chambre:"), roomNumberField,
                 new javafx.scene.control.Label("Capacité:"), capacitySpinner
@@ -111,11 +108,9 @@ public class ModifierRoomController {
                     room.setCapacity(capacitySpinner.getValue());
                     serviceRoom.update(room);
                     loadRooms(); // Rafraîchir les données
-                    showAlert("Succès", "Modification réussie",
-                            "Chambre mise à jour avec succès", Alert.AlertType.INFORMATION);
+                    showAlert("Succès", "Modification réussie", "Chambre mise à jour avec succès", Alert.AlertType.INFORMATION);
                 } catch (SQLException e) {
-                    showAlert("Erreur", "Échec de modification",
-                            e.getMessage(), Alert.AlertType.ERROR);
+                    showAlert("Erreur", "Échec de modification", e.getMessage(), Alert.AlertType.ERROR);
                 }
             }
         });

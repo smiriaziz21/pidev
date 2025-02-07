@@ -8,12 +8,13 @@
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="Controllers.ModifierHotelController">
 
-    <TableView fx:id="tableView" layoutX="25.0" layoutY="50.0" prefHeight="300.0" prefWidth="550.0">
+    <TableView fx:id="tableView" prefHeight="300.0" prefWidth="600.0">
         <columns>
             <TableColumn fx:id="colId" text="Matricule Hotel" />
             <TableColumn fx:id="colName" text="Nom" />
             <TableColumn fx:id="colLocation" text="Localisation" />
             <TableColumn fx:id="colAction" text="Actions" />
+            <TableColumn fx:id="colModifyRoom" text="Modifier Chambre" />
         </columns>
     </TableView>
 </VBox>

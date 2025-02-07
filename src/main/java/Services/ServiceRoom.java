@@ -23,9 +23,9 @@ public  class ServiceRoom implements IService<Room> {
 
     @Override
     public void ajouter(Room room) throws SQLException {
-        String req = "INSERT INTO `rooms` (`id`, `hotel_id`, `room_number`, `capacity`) VALUES (NULL, '" 
-                     + room.getHotelId() + "', '" 
-                     + room.getRoomNumber() + "', '" 
+        String req = "INSERT INTO `rooms` (`id`, `hotel_id`, `room_number`, `capacity`) VALUES (NULL, '"
+                     + room.getHotelId() + "', '"
+                     + room.getRoomNumber() + "', '"
                      + room.getCapacity() + "');";
         st.executeUpdate(req);
     }
@@ -46,9 +46,9 @@ public  class ServiceRoom implements IService<Room> {
 
     @Override
     public void update(Room room) throws SQLException {
-        String req = "UPDATE `rooms` SET `hotel_id` = '" + room.getHotelId() + 
-                     "', `room_number` = '" + room.getRoomNumber() + 
-                     "', `capacity` = '" + room.getCapacity() + 
+        String req = "UPDATE `rooms` SET `hotel_id` = '" + room.getHotelId() +
+                     "', `room_number` = '" + room.getRoomNumber() +
+                     "', `capacity` = '" + room.getCapacity() +
                      "' WHERE `id` = " + room.getId() + ";";
         st.executeUpdate(req);
     }
@@ -71,24 +71,30 @@ public  class ServiceRoom implements IService<Room> {
     }
 
 
-    public List<Room> getRoomsByResponsableId(int responsableId) throws SQLException {
+    public List<Room> getRoomsByResponsableId( int responsableId,int hotelId) throws SQLException {
         List<Room> list = new ArrayList<>();
-        String query = "SELECT r.* FROM rooms r " +
+        String query = "SELECT r.id, r.hotel_id, r.room_number, r.capacity " +
+                "FROM rooms r " +
                 "JOIN hotels h ON r.hotel_id = h.id " +
-                "WHERE h.responsable_hotel_id = ?";
+                "WHERE h.responsable_hotel_id = ? AND h.id = ?";
+
         PreparedStatement pstmt = con.prepareStatement(query);
         pstmt.setInt(1, responsableId);
+        pstmt.setInt(2, hotelId);
         ResultSet rs = pstmt.executeQuery();
 
         while (rs.next()) {
             int id = rs.getInt("id");
-            int hotelId = rs.getInt("hotel_id");
+            int hotel_Id = rs.getInt("hotel_id");
             String roomNumber = rs.getString("room_number");
             int capacity = rs.getInt("capacity");
-            Room room = new Room(id, hotelId, roomNumber, capacity);
+            Room room = new Room(id, hotel_Id, roomNumber, capacity);
             list.add(room);
         }
+
         return list;
     }
+
+
 
 }

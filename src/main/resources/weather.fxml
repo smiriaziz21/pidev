@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?> <!-- Import Insets properly -->
+
+<VBox xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.WeatherController" >
+    <Text text="Weather App" style="-fx-font-size: 24px;" />
+    <Label text="Location:" />
+    <TextField fx:id="locationField" promptText="Enter location" />
+    <Label text="Date:" />
+    <DatePicker fx:id="datePicker" />
+    <Button text="Get Weather" onAction="#fetchWeather" />
+    <Label fx:id="resultLabel" text="" style="-fx-font-size: 16px;" />
+</VBox>

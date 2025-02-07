@@ -18,8 +18,6 @@
             <Button text="📝 Modifier Hotel" fx:id="btnModifierHotel" style="-fx-background-color: #3498DB; -fx-text-fill: white;" />
             <Button text="❌ Supprimer Hotel" fx:id="btnSupprimerHotel" style="-fx-background-color: #3498DB; -fx-text-fill: white;" />
             <Button text="🛏 Ajouter Chambre" fx:id="btnAjouterChambre" style="-fx-background-color: #E67E22; -fx-text-fill: white;" />
-            <Button text="📝 Modifier Chambre" fx:id="btnModifierChambre" style="-fx-background-color: #E67E22; -fx-text-fill: white;" />
-            <Button text="❌ Supprimer Chambre" fx:id="btnSupprimerChambre" style="-fx-background-color: #E67E22; -fx-text-fill: white;" />
         </VBox>
     </left>
 

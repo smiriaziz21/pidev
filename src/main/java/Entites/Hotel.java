@@ -1,7 +1,5 @@
 package Entites;
 
-import java.util.ArrayList;
-import java.util.List;
 
 public class Hotel {
     private int id;
@@ -62,17 +60,6 @@ public class Hotel {
         this.responsableHotelId = responsableHotelId;
     }
 
-   // public List<Room> getRooms() {
-      //  return rooms;
-   // }
-
-   // public void setRooms(List<Room> rooms) {
-     //   this.rooms = rooms;
-   // }
-
-   // public void addRoom(Room room) {
-    //    this.rooms.add(room);
-   // }
 
     @Override
     public String toString() {

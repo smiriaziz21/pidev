@@ -7,6 +7,7 @@ import Services.ServiceRoom;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.util.StringConverter;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -29,11 +30,29 @@ public class Ajouterunechambre {
     private void loadHotels() {
         try {
             List<Hotel> hotels = serviceHotel.getAllByResponsableId(currentResponsableId);
-            cbHotel.setItems(FXCollections.observableArrayList(hotels));
+
+            if (hotels.isEmpty()) {
+                showAlert("Information", "Aucun hôtel trouvé", "Aucun hôtel n'est associé à ce responsable.", Alert.AlertType.INFORMATION);
+                cbHotel.getItems().clear();
+            } else {
+                cbHotel.setItems(FXCollections.observableArrayList(hotels));
+                cbHotel.setConverter(new StringConverter<Hotel>() {
+                    @Override
+                    public String toString(Hotel hotel) {
+                        return hotel.getName(); // Affiche seulement le nom dans le ComboBox
+                    }
+
+                    @Override
+                    public Hotel fromString(String string) {
+                        return null; // Pas utilisé, mais requis par l'interface
+                    }
+                });
+            }
         } catch (SQLException e) {
             showAlert("Erreur", "Impossible de charger les hôtels", e.getMessage(), Alert.AlertType.ERROR);
         }
     }
+
 
     @FXML
     private void handleAddRoom() {

@@ -49,6 +49,17 @@ public class ServiceHotel implements IService<Hotel> {
     }
 
 
+    public List<String> getAllHotelNamesByResponsableId(int responsableId) throws SQLException {
+        List<String> hotelNames = new ArrayList<>();
+        String query = "SELECT name FROM hotels WHERE responsable_hotel_id = ?";
+        PreparedStatement pstmt = con.prepareStatement(query);
+        pstmt.setInt(1, responsableId);
+        ResultSet rs = pstmt.executeQuery();
+        while (rs.next()) {
+            hotelNames.add(rs.getString("name"));
+        }
+        return hotelNames;
+    }
 
 
     public List<Hotel> getAllByResponsableId(int responsableId) throws SQLException {

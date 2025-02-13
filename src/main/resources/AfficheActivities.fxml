@@ -4,16 +4,13 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 
 <AnchorPane prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.AfficheActiviteController">
-
     <VBox spacing="10" layoutX="50.0" layoutY="50.0">
-
-
-
-
+        <!-- Add Activity Button -->
         <Button text="Add Activity"
                 prefWidth="200"
                 onAction="#handleAddActivity"
@@ -29,7 +26,8 @@
                -fx-hover-background-color: #45A049;" />
 
 
-        <!-- TableView affichant les activités -->
+
+        <!-- TableView for Activities -->
         <TableView fx:id="tablev" prefHeight="400.0" prefWidth="1000.0">
             <columns>
                 <TableColumn fx:id="colname" text="Name" prefWidth="100.0"/>

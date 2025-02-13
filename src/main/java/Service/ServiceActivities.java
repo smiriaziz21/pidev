@@ -4,7 +4,6 @@ import Entite.Activities;
 import Utils.DataSource;
 
 import java.sql.*;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,8 +15,8 @@ public class ServiceActivities implements IService<Activities> {
 
     @Override
     public void ajouter(Activities activities) throws SQLException {
-        String req = "INSERT INTO activities (id_event, name, description, start_date, end_date, location, responsible_id) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?);";
+        String req = "INSERT INTO activities (id_event, name, description, start_date, end_date, location, responsible_id, category_id) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
 
         try (PreparedStatement pst = con.prepareStatement(req)) {
             pst.setInt(1, activities.getIdEvent());
@@ -26,11 +25,14 @@ public class ServiceActivities implements IService<Activities> {
             pst.setTimestamp(4, Timestamp.valueOf(activities.getStartDate()));
             pst.setTimestamp(5, Timestamp.valueOf(activities.getEndDate()));
             pst.setString(6, activities.getLocation());
+
             if (activities.getResponsibleId() == null) {
                 pst.setNull(7, Types.INTEGER);
             } else {
                 pst.setInt(7, activities.getResponsibleId());
             }
+
+            pst.setInt(8, activities.getCategoryId());
 
             pst.executeUpdate();
             System.out.println("Activity added successfully!");
@@ -39,34 +41,39 @@ public class ServiceActivities implements IService<Activities> {
 
     @Override
     public void supprimer(Activities activities) throws SQLException {
-
+        delete(activities.getId());
     }
+
     public void delete(int activityId) throws SQLException {
         String query = "DELETE FROM activities WHERE id_activity = ?";
         try (PreparedStatement pst = con.prepareStatement(query)) {
             pst.setInt(1, activityId);
             pst.executeUpdate();
+            System.out.println("Activity deleted successfully!");
         }
     }
 
-
-
     @Override
     public void update(Activities activities) throws SQLException {
-        String req = "UPDATE activities SET name = ?, description = ?, start_date = ?, end_date = ?, location = ?, responsible_id = ? " +
+        String req = "UPDATE activities SET name = ?, description = ?, start_date = ?, end_date = ?, location = ?, responsible_id = ?, category_id = ? " +
                 "WHERE id_activity = ?;";
+
         try (PreparedStatement pst = con.prepareStatement(req)) {
             pst.setString(1, activities.getName());
             pst.setString(2, activities.getDescription());
             pst.setTimestamp(3, Timestamp.valueOf(activities.getStartDate()));
             pst.setTimestamp(4, Timestamp.valueOf(activities.getEndDate()));
             pst.setString(5, activities.getLocation());
+
             if (activities.getResponsibleId() == null) {
                 pst.setNull(6, Types.INTEGER);
             } else {
                 pst.setInt(6, activities.getResponsibleId());
             }
-            pst.setInt(7, activities.getId());
+
+            pst.setInt(7, activities.getCategoryId());
+            pst.setInt(8, activities.getId());
+
             pst.executeUpdate();
             System.out.println("Activity updated successfully!");
         }
@@ -87,7 +94,8 @@ public class ServiceActivities implements IService<Activities> {
                         rs.getTimestamp("start_date").toLocalDateTime(),
                         rs.getTimestamp("end_date").toLocalDateTime(),
                         rs.getString("location"),
-                        rs.getInt("responsible_id")
+                        rs.getInt("responsible_id"),
+                        rs.getInt("category_id")
                 );
             }
         }
@@ -98,8 +106,8 @@ public class ServiceActivities implements IService<Activities> {
     public List<Activities> getAll() throws SQLException {
         List<Activities> activitiesList = new ArrayList<>();
         String req = "SELECT * FROM activities;";
-        try (Statement st = con.createStatement()) {
-            ResultSet rs = st.executeQuery(req);
+        try (Statement st = con.createStatement();
+             ResultSet rs = st.executeQuery(req)) {
             while (rs.next()) {
                 Activities activity = new Activities(
                         rs.getInt("id_activity"),
@@ -109,12 +117,12 @@ public class ServiceActivities implements IService<Activities> {
                         rs.getTimestamp("start_date").toLocalDateTime(),
                         rs.getTimestamp("end_date").toLocalDateTime(),
                         rs.getString("location"),
-                        rs.getInt("responsible_id")
+                        rs.getInt("responsible_id"),
+                        rs.getInt("category_id")
                 );
                 activitiesList.add(activity);
             }
         }
         return activitiesList;
     }
-
 }

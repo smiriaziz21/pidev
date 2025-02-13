@@ -20,7 +20,8 @@ public class EmailController {
         String recipient = recipientField.getText();
         String subject = subjectField.getText();
         String body = bodyField.getText();
+        String filePath = "C:\\Users\\azizf\\Desktop\\pidev\\src\\main\\resources\\azizpfe.pdf";
 
-        EmailSender.sendEmail(recipient, subject, body);
+        EmailSender.sendEmail(recipient, subject, body, filePath);
     }
 }

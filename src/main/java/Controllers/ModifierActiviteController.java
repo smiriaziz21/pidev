@@ -20,12 +20,10 @@ public class ModifierActiviteController {
     private TextField txtDescription;
     @FXML
     private TextField txtLocation;
-
-    // Replace these TextFields with DatePicker controls
     @FXML
-    private DatePicker dpStartDate;  // DatePicker for Start Date
+    private DatePicker dpStartDate;
     @FXML
-    private DatePicker dpEndDate;    // DatePicker for End Date
+    private DatePicker dpEndDate;
 
     private Activities currentActivity;
     private final ServiceActivities service = new ServiceActivities();
@@ -64,8 +62,6 @@ public class ModifierActiviteController {
             Stage stage = (Stage) txtname.getScene().getWindow();
             stage.close();
         } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
             e.printStackTrace();
         }
     }

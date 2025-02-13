@@ -11,9 +11,9 @@ public class Activities {
     private LocalDateTime endDate;
     private String location;
     private Integer responsibleId;
+    private int categoryId;
 
-
-    public Activities(int id, int idEvent, String name, String description, LocalDateTime startDate, LocalDateTime endDate, String location, Integer responsibleId) {
+    public Activities(int id, int idEvent, String name, String description, LocalDateTime startDate, LocalDateTime endDate, String location, Integer responsibleId, int categoryId) {
         this.id = id;
         this.idEvent = idEvent;
         this.name = name;
@@ -22,10 +22,10 @@ public class Activities {
         this.endDate = endDate;
         this.location = location;
         this.responsibleId = responsibleId;
+        this.categoryId = categoryId;
     }
 
-
-    public Activities(int idEvent, String name, String description, LocalDateTime startDate, LocalDateTime endDate, String location, Integer responsibleId) {
+    public Activities(int idEvent, String name, String description, LocalDateTime startDate, LocalDateTime endDate, String location, Integer responsibleId, int categoryId) {
         this.idEvent = idEvent;
         this.name = name;
         this.description = description;
@@ -33,79 +33,35 @@ public class Activities {
         this.endDate = endDate;
         this.location = location;
         this.responsibleId = responsibleId;
+        this.categoryId = categoryId;
     }
 
+    public Activities() {}
 
-    public Activities() {
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
 
-    }
+    public int getIdEvent() { return idEvent; }
+    public void setIdEvent(int idEvent) { this.idEvent = idEvent; }
 
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
 
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
 
-    // Getters and Setters
-    public int getId() {
-        return id;
-    }
+    public LocalDateTime getStartDate() { return startDate; }
+    public void setStartDate(LocalDateTime startDate) { this.startDate = startDate; }
 
-    public void setId(int id) {
-        this.id = id;
-    }
+    public LocalDateTime getEndDate() { return endDate; }
+    public void setEndDate(LocalDateTime endDate) { this.endDate = endDate; }
 
-    public int getIdEvent() {
-        return idEvent;
-    }
+    public String getLocation() { return location; }
+    public void setLocation(String location) { this.location = location; }
 
-    public void setIdEvent(int idEvent) {
-        this.idEvent = idEvent;
-    }
+    public Integer getResponsibleId() { return responsibleId; }
+    public void setResponsibleId(Integer responsibleId) { this.responsibleId = responsibleId; }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public LocalDateTime getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(LocalDateTime startDate) {
-        this.startDate = startDate;
-    }
-
-    public LocalDateTime getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(LocalDateTime endDate) {
-        this.endDate = endDate;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
-    public Integer getResponsibleId() {
-        return responsibleId;
-    }
-
-    public void setResponsibleId(Integer responsibleId) {
-        this.responsibleId = responsibleId;
-    }
-
-    // Optional: Add method for converting LocalDateTime to SQL Timestamp if needed for database storage
+    public int getCategoryId() { return categoryId; }
+    public void setCategoryId(int categoryId) { this.categoryId = categoryId; }
 }

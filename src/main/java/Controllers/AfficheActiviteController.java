@@ -1,10 +1,12 @@
 package Controllers;
 
 import Entite.Activities;
+import Entite.Categories;
+import Service.ServiceCategory;
 import Service.ServiceActivities;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -21,6 +23,8 @@ import javafx.util.Callback;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class AfficheActiviteController implements Initializable {
@@ -38,41 +42,55 @@ public class AfficheActiviteController implements Initializable {
     @FXML
     private TableColumn<Activities, String> colendDate;
     @FXML
-    private TableColumn<Activities, Void> colActions; // Corrected to Activities and Void
-    @FXML
-    private Label lblWeather;
-
+    private TableColumn<Activities, Void> colActions;
 
     private final ServiceActivities service = new ServiceActivities();
-    private ObservableList<Activities> activitiesList = FXCollections.observableArrayList();
+    private final ServiceCategory serviceC = new ServiceCategory();
+    private final ObservableList<Activities> activitiesList = FXCollections.observableArrayList();
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         loadActivities();
         setupActionButtons();
+        loadCategories();
 
     }
+    private void loadCategories() {
+        try {
+            List<Categories> categories = serviceC.getAll();
+            ObservableList<String> categoryNames = FXCollections.observableArrayList();
+            for (Categories category : categories) {
+                categoryNames.add(category.getName());
+            }
 
-
-
+        } catch (SQLException e) {
+            showErrorMessage("Error loading categories", e);
+        }
+    }
     void loadActivities() {
         try {
             activitiesList.setAll(service.getAll());
             tablev.setItems(activitiesList);
 
-
             colname.setCellValueFactory(new PropertyValueFactory<>("name"));
             coldescription.setCellValueFactory(new PropertyValueFactory<>("description"));
             collocation.setCellValueFactory(new PropertyValueFactory<>("location"));
-            colstartDate.setCellValueFactory(new PropertyValueFactory<>("startDate"));
-            colendDate.setCellValueFactory(new PropertyValueFactory<>("endDate"));
+
+            // Format LocalDateTime to String for display
+            colstartDate.setCellValueFactory(cellData ->
+                    new SimpleStringProperty(cellData.getValue().getStartDate().format(formatter))
+            );
+            colendDate.setCellValueFactory(cellData ->
+                    new SimpleStringProperty(cellData.getValue().getEndDate().format(formatter))
+            );
+
         } catch (SQLException e) {
             showErrorMessage("Error loading activities", e);
         }
     }
 
     private void setupActionButtons() {
-
         Callback<TableColumn<Activities, Void>, TableCell<Activities, Void>> cellFactory = param -> new TableCell<>() {
             private final Button btnUpdate = new Button("Update");
             private final Button btnDelete = new Button("Delete");
@@ -139,6 +157,8 @@ public class AfficheActiviteController implements Initializable {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/AjouteActivities.fxml"));
             Parent root = loader.load();
+
+            // Get controller instance and set the parent reference
             AjouterActiviteController controller = loader.getController();
             controller.setParentController(this);
 
@@ -148,6 +168,7 @@ public class AfficheActiviteController implements Initializable {
             stage.setTitle("Add New Activity");
             stage.showAndWait();
 
+            // Refresh activities after adding
             loadActivities();
         } catch (IOException e) {
             showErrorMessage("Error opening add window", e);
@@ -161,14 +182,12 @@ public class AfficheActiviteController implements Initializable {
 
     @FXML
     void Back(ActionEvent event) throws IOException {
-
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/HomePage.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("HomePage.fxml"));
         Parent root = loader.load();
         tablev.getScene().setRoot(root);
     }
 
     private void showErrorMessage(String message, Exception e) {
-
         Alert alert = new Alert(Alert.AlertType.ERROR, message + ": " + e.getMessage(), ButtonType.OK);
         alert.showAndWait();
         e.printStackTrace();

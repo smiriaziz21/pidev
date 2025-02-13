@@ -1,29 +1,34 @@
 package Controllers;
 
 import Entite.Activities;
+import Entite.Categories;
 import Service.ServiceActivities;
-import javafx.event.ActionEvent;
+import Service.ServiceCategory;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 public class AjouterActiviteController {
 
     @FXML
     private TextField txtname;
     @FXML
-    private TextField txtDescription;
+    private TextArea txtDescription;
     @FXML
     private DatePicker dpStartDate;
     @FXML
@@ -33,132 +38,108 @@ public class AjouterActiviteController {
     @FXML
     private TextField txtResponsibleId;
     @FXML
-    private TextField txtIdEvent;
+    private ComboBox<String> cbCategory;
 
-    private final ServiceActivities service = new ServiceActivities();
+    private final ServiceActivities serviceActivities = new ServiceActivities();
+    private final ServiceCategory serviceCategory = new ServiceCategory();
 
     private AfficheActiviteController parentController;
-    private Activities currentActivity = null;
 
-    // Link to parent controller for table refresh
-    public void setParentController(AfficheActiviteController controller) {
-        this.parentController = controller;
-    }
-
-    // Load existing activity for updating
-    public void setActivity(Activities activity) {
-        if (activity != null) {
-            this.currentActivity = activity;
-            txtname.setText(activity.getName());
-            txtDescription.setText(activity.getDescription());
-            dpStartDate.setValue(activity.getStartDate().toLocalDate());
-            dpEndDate.setValue(activity.getEndDate().toLocalDate());
-            txtLocation.setText(activity.getLocation());
-            txtResponsibleId.setText(String.valueOf(activity.getResponsibleId()));
-            txtIdEvent.setText(String.valueOf(activity.getIdEvent()));
-        }
+    public void setParentController(AfficheActiviteController parentController) {
+        this.parentController = parentController;
     }
 
     @FXML
-    void ajouter(ActionEvent event) {
+    public void initialize() {
+        loadCategories();
+    }
+
+    private void loadCategories() {
         try {
-            if (!validateInputs()) return;
-            LocalDateTime startDateTime = LocalDateTime.of(dpStartDate.getValue(), LocalTime.MIDNIGHT);
-            LocalDateTime endDateTime = LocalDateTime.of(dpEndDate.getValue(), LocalTime.MIDNIGHT);
-            // Create new activity
-            Activities activity = new Activities(
-                    Integer.parseInt(txtIdEvent.getText()),
-                    txtname.getText(),
-                    txtDescription.getText(),
-                    startDateTime,
-                    endDateTime,
-                    txtLocation.getText(),
-                    Integer.parseInt(txtResponsibleId.getText())
-            );
-
-            service.ajouter(activity);
-            showAlert(Alert.AlertType.INFORMATION, "Success", "Activity added successfully!");
-
-            // Refresh table in the main window
-            if (parentController != null) {
-                parentController.loadActivities();
+            List<Categories> categories = serviceCategory.getAll();
+            ObservableList<String> categoryNames = FXCollections.observableArrayList();
+            for (Categories category : categories) {
+                categoryNames.add(category.getName());
             }
-
-            closeWindow();
+            cbCategory.setItems(categoryNames);
         } catch (SQLException e) {
-            showAlert(Alert.AlertType.ERROR, "Database Error", "Error adding activity: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
-
     @FXML
-    void delete(ActionEvent event) {
+    private void ajouterActivite() {
         try {
-            if (currentActivity == null) {
-                showAlert(Alert.AlertType.ERROR, "Error", "No activity selected for deletion!");
+            // Get values from the form
+            String name = txtname.getText();
+            String description = txtDescription.getText();
+            LocalDateTime startDate = LocalDateTime.of(dpStartDate.getValue(), LocalTime.MIDNIGHT);
+            LocalDateTime endDate = LocalDateTime.of(dpEndDate.getValue(), LocalTime.MIDNIGHT);
+            String location = txtLocation.getText();
+            Integer responsibleId = txtResponsibleId.getText().isEmpty() ? null : Integer.parseInt(txtResponsibleId.getText());
+
+            // Handle dynamic category
+            String categoryName = cbCategory.getValue();
+            if (categoryName == null || categoryName.isEmpty()) {
+                showAlert("Category Error", "Category cannot be empty. Please select or enter a category.");
                 return;
             }
 
-            service.supprimer(currentActivity);
-            showAlert(Alert.AlertType.INFORMATION, "Success", "Activity deleted successfully!");
+            int categoryId;
+            // Check if the category already exists
+            Categories category = serviceCategory.findByName(categoryName);
+            if (category == null) {
+                // Add new category
+                category = new Categories(categoryName, "");
+                serviceCategory.ajouter(category);
+                categoryId = category.getId();
+            } else {
+                categoryId = category.getId();
+            }
 
+            // Create and add the activity
+            Activities activity = new Activities(1, name, description, startDate, endDate, location, responsibleId, categoryId);
+            serviceActivities.ajouter(activity);
+
+            // Refresh the parent controller's table
             if (parentController != null) {
                 parentController.loadActivities();
             }
 
-            closeWindow();
-        } catch (SQLException e) {
-            showAlert(Alert.AlertType.ERROR, "Database Error", "Error deleting activity: " + e.getMessage());
+            // Close the window
+            txtname.getScene().getWindow().hide();
+        } catch (SQLException | IllegalArgumentException e) {
+            showAlert("Error", "An error occurred while adding the activity: " + e.getMessage());
         }
     }
 
-
-
-    private boolean validateInputs() {
-        // Check if any required field is empty or null
-        if (txtname.getText().isEmpty() ||
-                txtDescription.getText().isEmpty() ||
-                dpStartDate.getValue() == null ||
-                dpEndDate.getValue() == null ||
-                txtLocation.getText().isEmpty() ||
-                txtResponsibleId.getText().isEmpty() ||
-                txtIdEvent.getText().isEmpty()) {
-
-            showAlert(Alert.AlertType.WARNING, "Validation Error", "Please fill in all fields.");
-            return false;
-        }
-
-        // You no longer need to parse the dates because DatePicker returns a LocalDate.
-        // If you want to ensure the dates are logically valid (e.g., start date before end date), you can add:
-        if (dpStartDate.getValue().isAfter(dpEndDate.getValue())) {
-            showAlert(Alert.AlertType.WARNING, "Validation Error", "Start date must be before end date.");
-            return false;
-        }
-
-        // Validate that Responsible ID and Event ID are numbers.
+    @FXML
+    private void openAddCategoryWindow() {
         try {
-            Integer.parseInt(txtResponsibleId.getText());
-            Integer.parseInt(txtIdEvent.getText());
-        } catch (NumberFormatException e) {
-            showAlert(Alert.AlertType.WARNING, "Validation Error", "Responsible ID and Event ID must be numbers.");
-            return false;
-        }
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AjouterCategory.fxml"));
+            Parent root = loader.load();
 
-        return true;
+            AjouterCategoryController controller = loader.getController();
+            controller.setParentController(this);
+
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setTitle("Add Category");
+            stage.showAndWait();
+
+            // Refresh categories after adding
+            loadCategories();
+        } catch (IOException e) {
+            showAlert("Error", "Failed to open the Add Category window: " + e.getMessage());
+        }
     }
 
-
-    private void showAlert(Alert.AlertType type, String title, String message) {
-        Alert alert = new Alert(type);
+    private void showAlert(String title, String message) {
+        javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR);
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
-    }
-
-    @FXML
-    private void closeWindow() {
-        Stage stage = (Stage) txtname.getScene().getWindow();
-        stage.close();
     }
 }

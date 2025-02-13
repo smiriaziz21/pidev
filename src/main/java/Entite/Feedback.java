@@ -12,9 +12,8 @@ public class Feedback {
     private IntegerProperty rating;
     private ObjectProperty<LocalDate> date;
 
-    // Constructor for new Feedback without ID (ID will be set to 0)
     public Feedback(int clientId, int eventId, String comment, int rating, LocalDate date) {
-        this.id = new SimpleIntegerProperty(0);  // Set default ID to 0
+        this.id = new SimpleIntegerProperty(0);
         this.clientId = new SimpleIntegerProperty(clientId);
         this.eventId = new SimpleIntegerProperty(eventId);
         this.comment = new SimpleStringProperty(comment);
@@ -22,7 +21,6 @@ public class Feedback {
         this.date = new SimpleObjectProperty<>(date);
     }
 
-    // Constructor for existing Feedback with ID (used when loading from DB)
     public Feedback(int id, int clientId, int eventId, String comment, int rating, LocalDate date) {
         this.id = new SimpleIntegerProperty(id);
         this.clientId = new SimpleIntegerProperty(clientId);
@@ -32,7 +30,6 @@ public class Feedback {
         this.date = new SimpleObjectProperty<>(date);
     }
 
-    // Getters and Setters for the properties
     public int getId() {
         return id.get();
     }
@@ -105,7 +102,6 @@ public class Feedback {
         return date;
     }
 
-    // Helper method to check if this feedback is within the given date range
     public boolean isWithinDateRange(LocalDate startDate, LocalDate endDate) {
         if (startDate != null && date.get().isBefore(startDate)) {
             return false;
@@ -116,7 +112,6 @@ public class Feedback {
         return true;
     }
 
-    // Helper method for searching within the comment
     public boolean matchesSearchKeyword(String keyword) {
         return comment.get().toLowerCase().contains(keyword.toLowerCase());
     }

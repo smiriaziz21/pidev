@@ -21,7 +21,7 @@ public class FeedbackModifierController {
     @FXML
     private TextArea txtComment;
     @FXML
-    private ComboBox<Integer> comboRating; // Use ComboBox with Integer type
+    private ComboBox<Integer> comboRating;
     @FXML
     private DatePicker dpDate;
 
@@ -37,7 +37,7 @@ public class FeedbackModifierController {
         txtEventId.setDisable(true);
 
         txtComment.setText(feedback.getComment());
-        comboRating.setValue(feedback.getRating()); // Set the selected rating
+        comboRating.setValue(feedback.getRating());
 
         if (feedback.getDate() != null) {
             dpDate.setValue(feedback.getDate());
@@ -58,7 +58,7 @@ public class FeedbackModifierController {
             return;
         }
 
-        int rating = comboRating.getValue(); // Get the rating directly from ComboBox
+        int rating = comboRating.getValue();
 
         if (rating < 1 || rating > 5) {
             showAlert("Erreur", "La note doit être comprise entre 1 et 5.");

@@ -20,40 +20,45 @@ public class FactureAjouterController {
     @FXML
     private TextField txtAmount;
     @FXML
-    private DatePicker datePicker;  // DatePicker for selecting date
+    private DatePicker datePicker;
     @FXML
-    private ComboBox<Integer> comboReservationId;  // ComboBox for selecting reservation ID
+    private ComboBox<Integer> comboReservationId;
+    @FXML
+    private ComboBox<String> comboConditionDePaiement;
+    @FXML
+    private ComboBox<String> comboModeDePaiement;
 
     private final ServiceFacture service = new ServiceFacture();
 
-    // Initialize the controller
     public void initialize() {
         try {
-            // Fetch reservation IDs and populate the ComboBox without showing alerts
             List<Integer> reservationIds = service.getReservationIds();
             comboReservationId.getItems().addAll(reservationIds);
         } catch (SQLException e) {
-            System.out.println("Error fetching reservation IDs: " + e.getMessage());
+            System.out.println("Erreur lors de la récupération des IDs de réservation: " + e.getMessage());
         }
+
+        comboModeDePaiement.getItems().addAll("Carte Bancaire", "Virement", "Chèque");
+
+        comboConditionDePaiement.getItems().addAll(
+                "À la réservation",
+                "À l’arrivée",
+                "50% à la réservation, 50% à l’événement"
+        );
     }
 
     @FXML
     void ajouter() {
-        // Only show alerts when clicking the "Ajouter" button
-
-        // Check if reservation ID is selected
         if (comboReservationId.getValue() == null) {
             showAlert("Erreur", "Veuillez sélectionner un ID de réservation.");
-            return;  // This will stop further execution if the condition fails
+            return;
         }
 
-        // Check if the amount field is empty
         if (txtAmount.getText().isEmpty()) {
             showAlert("Erreur", "Le montant ne peut pas être vide.");
             return;
         }
 
-        // Parse the amount entered and check for valid number format
         double amount;
         try {
             amount = Double.parseDouble(txtAmount.getText());
@@ -62,32 +67,35 @@ public class FactureAjouterController {
             return;
         }
 
-        // Check if the date is selected
         if (datePicker.getValue() == null) {
             showAlert("Erreur", "Veuillez sélectionner une date.");
             return;
         }
 
-        // All fields are valid, proceed with facture creation
+        if (comboConditionDePaiement.getValue() == null) {
+            showAlert("Erreur", "Veuillez sélectionner une condition de paiement.");
+            return;
+        }
+
+        if (comboModeDePaiement.getValue() == null) {
+            showAlert("Erreur", "Veuillez sélectionner un mode de paiement.");
+            return;
+        }
+
         Date date = Date.valueOf(datePicker.getValue());
 
-        // Correcting the constructor call with intValue() for reservationId
-        Facture facture = new Facture(comboReservationId.getValue().intValue(), amount, date.toLocalDate());
+        Facture facture = new Facture(comboReservationId.getValue().intValue(), amount, date.toLocalDate(),
+                comboConditionDePaiement.getValue(), comboModeDePaiement.getValue());
 
         try {
-            // Add the facture
             service.ajouter(facture);
             System.out.println("Facture ajoutée avec succès!");
-
-            // Optionally close the window after adding
             ((Stage) txtAmount.getScene().getWindow()).close();
-
         } catch (SQLException e) {
             showAlert("Erreur", "Erreur lors de l'ajout de la facture: " + e.getMessage());
         }
     }
 
-    // Helper method to show French alerts
     private void showAlert(String title, String message) {
         Alert alert = new Alert(AlertType.ERROR);
         alert.setTitle(title);
@@ -98,7 +106,6 @@ public class FactureAjouterController {
 
     @FXML
     void retour(ActionEvent event) {
-        // Close the current window and go back to the previous screen
         ((Stage) txtAmount.getScene().getWindow()).close();
     }
 }

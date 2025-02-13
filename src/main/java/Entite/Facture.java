@@ -10,24 +10,27 @@ public class Facture {
     private IntegerProperty reservationId;
     private DoubleProperty amount;
     private ObjectProperty<LocalDate> date;
+    private StringProperty conditionDePaiement;
+    private StringProperty modeDePaiement;
 
-    // Constructor for new Facture without ID (ID will be set to 0)
-    public Facture(int reservationId, double amount, LocalDate date) {
-        this.id = new SimpleIntegerProperty(0);  // Set default ID to 0
+    public Facture(int reservationId, double amount, LocalDate date, String conditionDePaiement, String modeDePaiement) {
+        this.id = new SimpleIntegerProperty(0);
         this.reservationId = new SimpleIntegerProperty(reservationId);
         this.amount = new SimpleDoubleProperty(amount);
         this.date = new SimpleObjectProperty<>(date);
+        this.conditionDePaiement = new SimpleStringProperty(conditionDePaiement);
+        this.modeDePaiement = new SimpleStringProperty(modeDePaiement);
     }
 
-    // Constructor for existing Facture with ID (used when loading from DB)
-    public Facture(int id, int reservationId, double amount, LocalDate date) {
+    public Facture(int id, int reservationId, double amount, LocalDate date, String conditionDePaiement, String modeDePaiement) {
         this.id = new SimpleIntegerProperty(id);
         this.reservationId = new SimpleIntegerProperty(reservationId);
         this.amount = new SimpleDoubleProperty(amount);
         this.date = new SimpleObjectProperty<>(date);
+        this.conditionDePaiement = new SimpleStringProperty(conditionDePaiement);
+        this.modeDePaiement = new SimpleStringProperty(modeDePaiement);
     }
 
-    // Getters and Setters for the properties
     public int getId() {
         return id.get();
     }
@@ -74,5 +77,29 @@ public class Facture {
 
     public ObjectProperty<LocalDate> dateProperty() {
         return date;
+    }
+
+    public String getConditionDePaiement() {
+        return conditionDePaiement.get();
+    }
+
+    public void setConditionDePaiement(String conditionDePaiement) {
+        this.conditionDePaiement.set(conditionDePaiement);
+    }
+
+    public StringProperty conditionDePaiementProperty() {
+        return conditionDePaiement;
+    }
+
+    public String getModeDePaiement() {
+        return modeDePaiement.get();
+    }
+
+    public void setModeDePaiement(String modeDePaiement) {
+        this.modeDePaiement.set(modeDePaiement);
+    }
+
+    public StringProperty modeDePaiementProperty() {
+        return modeDePaiement;
     }
 }

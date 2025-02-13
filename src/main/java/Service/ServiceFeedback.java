@@ -4,7 +4,9 @@ import Entite.Feedback;
 import Utils.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ServiceFeedback implements IService<Feedback> {
 
@@ -84,11 +86,9 @@ public class ServiceFeedback implements IService<Feedback> {
                 feedbackList.add(feedback);
             }
         }
-        System.out.println("Feedback list size: " + feedbackList.size());
         return feedbackList;
     }
 
-    // Fetch client IDs for the ComboBox
     public List<Integer> getClientIds() throws SQLException {
         List<Integer> clientIds = new ArrayList<>();
         String req = "SELECT DISTINCT client_id FROM feedback";
@@ -101,7 +101,6 @@ public class ServiceFeedback implements IService<Feedback> {
         return clientIds;
     }
 
-    // Fetch event IDs for the ComboBox
     public List<Integer> getEventIds() throws SQLException {
         List<Integer> eventIds = new ArrayList<>();
         String req = "SELECT DISTINCT event_id FROM feedback";
@@ -115,11 +114,10 @@ public class ServiceFeedback implements IService<Feedback> {
     }
 
     public List<String> getClientIdsAsStrings() throws SQLException {
-        // Retrieve client IDs as Strings from the database
         List<String> clientIds = new ArrayList<>();
-        String req = "SELECT DISTINCT client_id FROM feedback"; // Fixed query
+        String req = "SELECT DISTINCT client_id FROM feedback";
         try (Statement st = con.createStatement()) {
-            ResultSet rs = st.executeQuery(req); // Execute the query
+            ResultSet rs = st.executeQuery(req);
             while (rs.next()) {
                 clientIds.add(String.valueOf(rs.getInt("client_id")));
             }
@@ -128,11 +126,10 @@ public class ServiceFeedback implements IService<Feedback> {
     }
 
     public List<String> getEventIdsAsStrings() throws SQLException {
-        // Retrieve event IDs as Strings from the database
         List<String> eventIds = new ArrayList<>();
-        String req = "SELECT DISTINCT event_id FROM feedback"; // Fixed query
+        String req = "SELECT DISTINCT event_id FROM feedback";
         try (Statement st = con.createStatement()) {
-            ResultSet rs = st.executeQuery(req); // Execute the query
+            ResultSet rs = st.executeQuery(req);
             while (rs.next()) {
                 eventIds.add(String.valueOf(rs.getInt("event_id")));
             }
@@ -140,4 +137,35 @@ public class ServiceFeedback implements IService<Feedback> {
         return eventIds;
     }
 
+    public Map<String, Map<Integer, Integer>> getFeedbackStatisticsOverTime() throws SQLException {
+        Map<String, Map<Integer, Integer>> statistics = new HashMap<>();
+        String req = "SELECT DATE_FORMAT(date, '%Y-%m') AS month, rating, COUNT(*) FROM feedback GROUP BY month, rating";
+
+        try (PreparedStatement pst = con.prepareStatement(req);
+             ResultSet rs = pst.executeQuery()) {
+
+            while (rs.next()) {
+                String month = rs.getString("month");
+                int rating = rs.getInt("rating");
+                int count = rs.getInt("COUNT(*)");
+
+                statistics.putIfAbsent(month, new HashMap<>());
+                statistics.get(month).put(rating, count);
+            }
+        }
+
+        return statistics;
+    }
+
+    public Map<Integer, Double> getEventRatings() throws SQLException {
+        Map<Integer, Double> eventRatings = new HashMap<>();
+        String req = "SELECT event_id, AVG(rating) AS average_rating FROM feedback GROUP BY event_id";
+        try (PreparedStatement pst = con.prepareStatement(req);
+             ResultSet rs = pst.executeQuery()) {
+            while (rs.next()) {
+                eventRatings.put(rs.getInt("event_id"), rs.getDouble("average_rating"));
+            }
+        }
+        return eventRatings;
+    }
 }

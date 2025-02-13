@@ -9,38 +9,40 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.FeedbackAfficheController">
+<AnchorPane prefHeight="525.0" prefWidth="1079.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.FeedbackAfficheController">
     <children>
-        <!-- Search TextField -->
-        <TextField fx:id="searchField" layoutX="50.0" layoutY="52.0" promptText="Search..." />
+        <HBox layoutX="50.0" layoutY="10.0" spacing="20.0">
+            <children>
+                <TextField fx:id="searchField" prefWidth="200.0" promptText="Rechercher..." />
+            </children>
+        </HBox>
 
-        <!-- Start Date Picker -->
-        <DatePicker fx:id="dateDebut" layoutX="250.0" layoutY="20.0" promptText="Start Date" />
+        <HBox layoutX="50.0" layoutY="60.0" spacing="20.0">
+            <children>
+                <ComboBox fx:id="clientComboBox" prefWidth="200.0" promptText="ID Client" />
+                <ComboBox fx:id="eventComboBox" prefWidth="200.0" promptText="ID Événement" />
+                <DatePicker fx:id="dateDebut" prefWidth="200.0" promptText="Date Début" />
+                <DatePicker fx:id="dateFin" prefWidth="200.0" promptText="Date Fin" />
+            </children>
+        </HBox>
 
-        <!-- End Date Picker -->
-        <DatePicker fx:id="dateFin" layoutX="250.0" layoutY="50.0" promptText="End Date" />
-
-        <!-- Table to display feedbacks -->
-        <TableView fx:id="tablev" layoutX="27.0" layoutY="98.0" prefHeight="300.0" prefWidth="687.0">
+        <TableView fx:id="tablev" layoutX="14.0" layoutY="106.0" prefHeight="350.0" prefWidth="1079.0" style="-fx-background-color: #f4f4f4;">
             <columns>
-                <TableColumn fx:id="colId" prefWidth="120.0" text="ID" />
-                <TableColumn fx:id="colClientId" prefWidth="180.0" text="Client ID" />
-                <TableColumn fx:id="colEventId" prefWidth="180.0" text="Event ID" />
-                <TableColumn fx:id="colComment" prefWidth="180.0" text="Comment" />
-                <TableColumn fx:id="colRating" prefWidth="120.0" text="Rating" />
-                <TableColumn fx:id="colDate" prefWidth="180.0" text="Date" />
-                <TableColumn fx:id="colActions" prefWidth="180.0" text="Actions" />
+                <TableColumn fx:id="colId" prefWidth="50.0" text="ID" />
+                <TableColumn fx:id="colClientId" prefWidth="120.0" text="ID Client" />
+                <TableColumn fx:id="colEventId" prefWidth="130.0" text="ID Événement" />
+                <TableColumn fx:id="colComment" prefWidth="300.0" text="Commentaire" />
+                <TableColumn fx:id="colRating" prefWidth="100.0" text="Évaluation" />
+                <TableColumn fx:id="colDate" prefWidth="120.0" text="Date" />
+                <TableColumn fx:id="colActions" prefWidth="200.0" text="Actions" />
             </columns>
         </TableView>
 
-        <!-- Add Button for Feedback -->
-        <Button fx:id="btnAjouter" layoutX="50.0" layoutY="420.0" onAction="#openAddWindow" text="➕ Ajouter" />
-
-        <!-- Filters Section -->
-        <HBox layoutX="50.0" layoutY="470.0" spacing="10.0" />
-         <!-- Client ID Filter -->
-         <ComboBox fx:id="clientComboBox" layoutX="482.0" layoutY="52.0" prefWidth="180.0" promptText="Client ID" />
-         <!-- Event ID Filter -->
-         <ComboBox fx:id="eventComboBox" layoutX="483.0" layoutY="20.0" prefWidth="180.0" promptText="Event ID" />
+        <HBox layoutX="50.0" layoutY="480.0" spacing="20.0">
+            <children>
+                <Button fx:id="btnAjouter" onAction="#openAddWindowFeedback" style="-fx-background-color: #4CAF50; -fx-text-fill: white;" text="➕ Ajouter" />
+                <Button fx:id="btnStatistiques" onAction="#openStatistiqueWindow" style="-fx-background-color: #2196F3; -fx-text-fill: white;" text="📊 Statistiques" />
+            </children>
+        </HBox>
     </children>
 </AnchorPane>

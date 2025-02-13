@@ -1,7 +1,7 @@
 package Controllers;
 
 import Entite.Feedback;
-import Service.ServiceFeedback;  // You'll need to create this service for feedback
+import Service.ServiceFeedback;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -57,9 +57,9 @@ public class FeedbackAfficheController implements Initializable {
     private TextField searchField;
 
     @FXML
-    private DatePicker dateDebut;  // Start Date Picker
+    private DatePicker dateDebut;
     @FXML
-    private DatePicker dateFin;    // End Date Picker
+    private DatePicker dateFin;
 
     private final ServiceFeedback service = new ServiceFeedback();
     private ObservableList<Feedback> feedbackList = FXCollections.observableArrayList();
@@ -72,17 +72,15 @@ public class FeedbackAfficheController implements Initializable {
         btnAjouter.setOnMouseEntered(event -> btnAjouter.setStyle("-fx-background-color: #2e7d32; -fx-text-fill: white;"));
         btnAjouter.setOnMouseExited(event -> btnAjouter.setStyle("-fx-background-color: #43a047; -fx-text-fill: white;"));
 
-        // Add listeners to filters
         searchField.textProperty().addListener((observable, oldValue, newValue) -> filterFeedbacks());
-        dateDebut.valueProperty().addListener((observable, oldValue, newValue) -> filterFeedbacks());  // Add listener for start date
-        dateFin.valueProperty().addListener((observable, oldValue, newValue) -> filterFeedbacks());    // Add listener for end date
+        dateDebut.valueProperty().addListener((observable, oldValue, newValue) -> filterFeedbacks());
+        dateFin.valueProperty().addListener((observable, oldValue, newValue) -> filterFeedbacks());
     }
 
-    // Method to load all feedbacks from the service
     private void loadFeedbacks() {
         try {
             feedbackList.setAll(service.getAll());
-            System.out.println("Feedback List Size: " + feedbackList.size()); // Debugging line
+            System.out.println("Feedback List Size: " + feedbackList.size());
             tablev.setItems(feedbackList);
 
             colId.setCellValueFactory(cellData -> cellData.getValue().idProperty().asObject());
@@ -91,7 +89,6 @@ public class FeedbackAfficheController implements Initializable {
             colComment.setCellValueFactory(cellData -> cellData.getValue().commentProperty());
             colRating.setCellValueFactory(cellData -> cellData.getValue().ratingProperty().asObject());
 
-            // Format date as string
             colDate.setCellValueFactory(cellData -> {
                 if (cellData.getValue().getDate() != null) {
                     return new SimpleStringProperty(cellData.getValue().getDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
@@ -104,7 +101,6 @@ public class FeedbackAfficheController implements Initializable {
         }
     }
 
-    // Method to filter feedbacks based on search and date range
     private void filterFeedbacks() {
         String keyword = searchField.getText().toLowerCase();
         LocalDate startDate = dateDebut.getValue();
@@ -112,7 +108,6 @@ public class FeedbackAfficheController implements Initializable {
 
         ObservableList<Feedback> filteredList = feedbackList.stream()
                 .filter(feedback -> {
-                    // Check keyword in various properties
                     boolean matchesKeyword = keyword.isEmpty() ||
                             String.valueOf(feedback.getId()).contains(keyword) ||
                             String.valueOf(feedback.getClientId()).contains(keyword) ||
@@ -120,7 +115,6 @@ public class FeedbackAfficheController implements Initializable {
                             feedback.getComment().toLowerCase().contains(keyword) ||
                             (feedback.getDate() != null && feedback.getDate().toString().contains(keyword));
 
-                    // Check if date is within the selected range
                     boolean matchesDate = (startDate == null || feedback.getDate() != null && !feedback.getDate().isBefore(startDate)) &&
                             (endDate == null || feedback.getDate() != null && !feedback.getDate().isAfter(endDate));
 
@@ -131,25 +125,21 @@ public class FeedbackAfficheController implements Initializable {
         tablev.setItems(filteredList);
     }
 
-    // Method to setup actions for Update/Delete buttons
     private void setupActionButtons() {
         Callback<TableColumn<Feedback, Void>, TableCell<Feedback, Void>> cellFactory = param -> new TableCell<>() {
             private final Button btnUpdate = new Button("Update");
             private final Button btnDelete = new Button("Delete");
 
             {
-                // Update button action
                 btnUpdate.setOnAction(event -> {
                     Feedback feedback = getTableView().getItems().get(getIndex());
                     openUpdateWindow(feedback);
                 });
-                // Delete button action
                 btnDelete.setOnAction(event -> {
                     Feedback feedback = getTableView().getItems().get(getIndex());
                     deleteFeedback(feedback);
                 });
 
-                // Button styles
                 btnUpdate.setStyle("-fx-background-color: #ffa726; -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold;");
                 btnDelete.setStyle("-fx-background-color: #e53935; -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold;");
             }
@@ -169,7 +159,6 @@ public class FeedbackAfficheController implements Initializable {
         colActions.setCellFactory(cellFactory);
     }
 
-    // Method to handle feedback deletion
     private void deleteFeedback(Feedback feedback) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Confirmation");
@@ -181,7 +170,7 @@ public class FeedbackAfficheController implements Initializable {
                 try {
                     service.supprimer(feedback);
                     feedbackList.remove(feedback);
-                    filterFeedbacks(); // Update the list after deletion
+                    filterFeedbacks();
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
@@ -189,7 +178,6 @@ public class FeedbackAfficheController implements Initializable {
         });
     }
 
-    // Method to open the update window for a selected feedback
     private void openUpdateWindow(Feedback feedback) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/FeedbackModifier.fxml"));
@@ -205,14 +193,13 @@ public class FeedbackAfficheController implements Initializable {
             stage.showAndWait();
 
             loadFeedbacks();
-            filterFeedbacks(); // Ensure the list is updated after modification
+            filterFeedbacks();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    // Method to open the add window for a new feedback
-    public void openAddWindow() {
+    public void openAddWindowFeedback() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/FeedbackAjouter.fxml"));
             Parent root = loader.load();
@@ -224,13 +211,26 @@ public class FeedbackAfficheController implements Initializable {
             stage.showAndWait();
 
             loadFeedbacks();
-            filterFeedbacks(); // Update the list after adding
+            filterFeedbacks();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    // Back button action
+    public void openStatistiqueWindow() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FeedbackStatistiques.fxml"));
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setTitle("Statistiques Feedback");
+            stage.showAndWait();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     @FXML
     private void Back(ActionEvent event) {
         System.out.println("Back to previous screen");

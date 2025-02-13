@@ -14,9 +14,9 @@
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="700.0" styleClass="border-pane" stylesheets="@style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.LoginController">
     <left>
-        <AnchorPane prefHeight="500.0" prefWidth="380.0" style="-fx-background-color: #e9dee6;" BorderPane.alignment="CENTER">
+        <AnchorPane prefHeight="500.0" prefWidth="380.0" style="-fx-background-color: #7068ea;" BorderPane.alignment="CENTER">
             <children>
-                <Text fill="#cf8383" layoutX="23.0" layoutY="365.0" strokeType="OUTSIDE" strokeWidth="0.0" text="#### " textAlignment="CENTER">
+                <Text fill="#c2c8cf" layoutX="23.0" layoutY="365.0" strokeType="OUTSIDE" strokeWidth="0.0" text="#### " textAlignment="CENTER">
                     <font>
                         <Font name="Yu Gothic Regular" size="37.0" />
                     </font>
@@ -35,14 +35,16 @@
             <children>
                 <TextField fx:id="email" layoutX="108.0" layoutY="168.0" promptText="Username" style="-fx-background-color: transparent; -fx-border-color: #0596ff; -fx-border-width: 0px 0px 2px 0px;" />
                 <PasswordField fx:id="password" layoutX="105.0" layoutY="251.0" promptText="Password" style="-fx-background-color: transparent; -fx-border-color: #0596ff; -fx-border-width: 0px 0px 2px 0px;" />
-                <Button fx:id="login" layoutX="97.0" layoutY="337.0" mnemonicParsing="false" onAction="#login" prefHeight="30.0" prefWidth="70.0" style="-fx-background-color: #0598ff;" text="  Login" textFill="#f4efef" />
+                <Button fx:id="login" layoutX="97.0" layoutY="337.0" mnemonicParsing="false" onAction="#login" prefHeight="30.0" prefWidth="70.0" style="-fx-background-color: #0598ff;" text="  Login" textFill="#edf4e7"/>
                 <Text layoutX="138.0" layoutY="132.0" strokeType="OUTSIDE" strokeWidth="0.0" text="User Login" textAlignment="CENTER" wrappingWidth="83.71368408203125">
                     <font>
                         <Font name="Arial Bold" size="14.0" />
                     </font>
                 </Text>
                 <Button layoutX="323.0" mnemonicParsing="false" style="-fx-background-color: transparent;" />
-                <Button fx:id="signUp" layoutX="219.0" layoutY="336.0" mnemonicParsing="false" onAction="#signUp" prefHeight="29.0" prefWidth="70.0" style="-fx-background-color: #0598ff;" text="Sign Up" textFill="#eae6e6" />
+                <Button fx:id="signUp" layoutX="219.0" layoutY="336.0" mnemonicParsing="false" onAction="#signUp" prefHeight="29.0" prefWidth="70.0" style="-fx-background-color: #0598ff;" text="Sign Up" textFill="#e0eaea"/>
+                <!-- Forgot Password Hyperlink -->
+                <Hyperlink fx:id="forgotPassword" layoutX="108.0" layoutY="290.0" text="Forgot Password?" onAction="#handleForgotPassword" />
             </children>
         </AnchorPane>
     </right>

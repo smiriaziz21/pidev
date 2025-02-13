@@ -8,58 +8,79 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.paint.LinearGradient?>
+<?import javafx.scene.paint.Stop?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<BorderPane  maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.SignUpController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.SignUpController">
     <left>
-        <AnchorPane prefHeight="200.0" prefWidth="350.0" style="-fx-background-color: #e9dee6;" BorderPane.alignment="CENTER">
+        <AnchorPane prefHeight="600.0" prefWidth="400.0" style="-fx-background-color: linear-gradient(to bottom right, #6a11cb, #2575fc);" BorderPane.alignment="CENTER">
             <children>
-                <ImageView fitHeight="221.0" fitWidth="314.0" layoutX="14.0" layoutY="177.0" pickOnBounds="true" preserveRatio="true">
+                <ImageView fitHeight="200.0" fitWidth="300.0" layoutX="50.0" layoutY="100.0" pickOnBounds="true" preserveRatio="true">
                     <image>
                         <Image url="@../images/aaa.png" />
                     </image>
                 </ImageView>
-                <Text fill="#d95454" layoutX="79.0" layoutY="414.0" strokeType="OUTSIDE" strokeWidth="0.0" text="S'inscrire" textAlignment="CENTER" wrappingWidth="183.330078125">
+                <Text fill="WHITE" layoutX="50.0" layoutY="350.0" strokeType="OUTSIDE" strokeWidth="0.0" text="S'inscrire" textAlignment="CENTER" wrappingWidth="300.0">
                     <font>
-                        <Font name="Gabriola" size="44.0" />
+                        <Font name="Gabriola" size="48.0" />
+                    </font>
+                </Text>
+                <Text fill="WHITE" layoutX="50.0" layoutY="400.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Rejoignez-nous dès aujourd'hui !" textAlignment="CENTER" wrappingWidth="300.0">
+                    <font>
+                        <Font name="Calibri Light" size="16.0" />
                     </font>
                 </Text>
             </children>
         </AnchorPane>
     </left>
     <right>
-        <AnchorPane fx:id="s" prefHeight="200.0" prefWidth="350.0" BorderPane.alignment="CENTER" >
+        <AnchorPane prefHeight="600.0" prefWidth="400.0" style="-fx-background-color: #ffffff;" BorderPane.alignment="CENTER">
             <children>
-                <Text layoutX="131.0" layoutY="206.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Sign-UP " textAlignment="CENTER">
+                <Text layoutX="50.0" layoutY="80.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Créer un compte" textAlignment="CENTER">
                     <font>
-                        <Font name="Calibri Light" size="33.0" />
+                        <Font name="Calibri Light" size="28.0" />
                     </font>
                 </Text>
 
-                <Text fx:id="Username" layoutX="62.0" layoutY="263.0" strokeType="OUTSIDE" strokeWidth="0.0" text=" Nom:" textAlignment="CENTER" />
-                <TextField fx:id="usernameField" layoutX="139.0" layoutY="246.0" promptText="enter un username:  " style="-fx-background-color: transparent; -fx-border-color: #0596ff; -fx-border-width: 0px 0px 2px 0px;" />
-                <Text fx:id="Email" layoutX="57.0" layoutY="327.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Adresse email:" textAlignment="CENTER" />
-                <TextField fx:id="emailField" layoutX="139.0" layoutY="310.0" promptText="enter un mail " style="-fx-border-color: #0596ff; -fx-background-color: transparent; -fx-border-width: 0px 0px 2px 0px;" />
-                <Text fx:id="Passowrd" layoutX="56.0" layoutY="388.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Mot de passe :" />
-                <PasswordField fx:id="passwordField" layoutX="148.0" layoutY="369.0" promptText="entrer un password " style="-fx-border-color: #0596ff; -fx-border-width: 0px 0px 2px 0px; -fx-background-color: transparent;" />
-
-                <Button fx:id="signUp" layoutX="63.0" layoutY="517.0" mnemonicParsing="false" onAction="#signUp" prefHeight="30.0" prefWidth="87.0" style="-fx-background-color: #0598ff;" text="s'inscrire" textFill="#faf5f5">
+                <!-- Username Field -->
+                <TextField fx:id="usernameField" layoutX="50.0" layoutY="120.0" prefWidth="300.0" promptText="Entrez votre nom" style="-fx-background-color: #f5f5f5; -fx-border-color: #cccccc; -fx-border-radius: 5px; -fx-padding: 10px;">
                     <font>
-                        <Font size="13.0" />
+                        <Font name="Calibri Light" size="14.0" />
                     </font>
-                </Button>
-                <Button fx:id="backToLogin"  layoutX="180.0" layoutY="517.0" mnemonicParsing="false" onAction="#backToLogin" prefHeight="30.0" prefWidth="118.0" style="-fx-background-color:#FF0000;" text="se connecter" textFill="#ecebeb">
-                    <font>
-                        <Font size="13.0" />
-                    </font>
-                </Button>
+                </TextField>
 
-                <Text fx:id="Passowrd1" layoutX="75.0" layoutY="438.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Role" />
-                <CheckBox layoutX="143.0" layoutY="425.0" mnemonicParsing="false" prefHeight="18.0"  fx:id="clientCheckBox" prefWidth="111.0" text="Client" />
-                <CheckBox layoutX="143.0" layoutY="453.0" mnemonicParsing="false" prefHeight="18.0" fx:id="eventManagerCheckBox"  prefWidth="145.0" text="Responsable Event" />
-                <CheckBox layoutX="143.0" layoutY="483.0" mnemonicParsing="false" prefHeight="18.0" fx:id="hotelManagerCheckBox" prefWidth="140.0" text="Responsable_Hotel" />
+                <!-- Email Field -->
+                <TextField fx:id="emailField" layoutX="50.0" layoutY="180.0" prefWidth="300.0" promptText="Entrez votre email" style="-fx-background-color: #f5f5f5; -fx-border-color: #cccccc; -fx-border-radius: 5px; -fx-padding: 10px;">
+                    <font>
+                        <Font name="Calibri Light" size="14.0" />
+                    </font>
+                </TextField>
+
+                <!-- Password Field -->
+                <PasswordField fx:id="passwordField" layoutX="50.0" layoutY="240.0" prefWidth="300.0" promptText="Entrez un mot de passe" style="-fx-background-color: #f5f5f5; -fx-border-color: #cccccc; -fx-border-radius: 5px; -fx-padding: 10px;">
+                    <font>
+                        <Font name="Calibri Light" size="14.0" />
+                    </font>
+                </PasswordField>
+
+                <!-- Role Selection -->
+                <Text layoutX="50.0" layoutY="300.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Rôle :" textAlignment="CENTER">
+                    <font>
+                        <Font name="Calibri Light" size="14.0" />
+                    </font>
+                </Text>
+                <CheckBox fx:id="clientCheckBox" layoutX="50.0" layoutY="320.0" mnemonicParsing="false" text="Client" style="-fx-font-family: 'Calibri Light'; -fx-font-size: 14px;" />
+                <CheckBox fx:id="eventManagerCheckBox" layoutX="50.0" layoutY="350.0" mnemonicParsing="false" text="Responsable Event" style="-fx-font-family: 'Calibri Light'; -fx-font-size: 14px;" />
+                <CheckBox fx:id="hotelManagerCheckBox" layoutX="50.0" layoutY="380.0" mnemonicParsing="false" text="Responsable Hôtel" style="-fx-font-family: 'Calibri Light'; -fx-font-size: 14px;" />
+
+                <!-- Buttons -->
+                <Button fx:id="signUp" layoutX="50.0" layoutY="450.0" mnemonicParsing="false" onAction="#signUp" prefHeight="40.0" prefWidth="300.0" style="-fx-background-color: #6a11cb; -fx-text-fill: white; -fx-font-size: 14px; -fx-font-family: 'Calibri Light'; -fx-background-radius: 5px;" text="S'inscrire" />
+                <Button fx:id="backToLogin" layoutX="50.0" layoutY="510.0" mnemonicParsing="false" onAction="#backToLogin" prefHeight="40.0" prefWidth="300.0" style="-fx-background-color: transparent; -fx-text-fill: #6a11cb; -fx-font-size: 14px; -fx-font-family: 'Calibri Light'; -fx-border-color: #6a11cb; -fx-border-radius: 5px;" text="Se connecter" />
             </children>
+            <!-- Add a button to access the Block User Dashboard -->
         </AnchorPane>
     </right>
 </BorderPane>

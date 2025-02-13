@@ -10,6 +10,9 @@ public class Users {
     private final String email;
     private final String password;
     private final Role role;
+    private boolean isActive; // New field
+    private String status;
+
 
     public Users(int id, String name, String email, String password, Role role) {
         this.id = id;
@@ -17,6 +20,10 @@ public class Users {
         this.email = email;
         this.password = password;
         this.role = role;
+        this.isActive = isActive;
+        this.status = status;
+
+
     }
 
     public static Users getCurrentUser() {
@@ -50,5 +57,13 @@ public class Users {
     public Role getRole() {
         return role;
     }
+    public boolean isActive() {
+        return isActive;
+    }
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
 
+    public void setActive(boolean active) {
+        isActive = active;
+    }
 }

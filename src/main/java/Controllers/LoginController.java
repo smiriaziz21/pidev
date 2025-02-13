@@ -1,6 +1,5 @@
 package Controllers;
 
-
 import Entites.Users;
 import Services.DaoLogin;
 import javafx.event.ActionEvent;
@@ -13,7 +12,11 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
+import javax.mail.*;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import java.io.IOException;
+import java.util.Properties;
 
 public class LoginController {
     @FXML
@@ -26,12 +29,13 @@ public class LoginController {
     private Button loginButton;
     @FXML
     private ImageView eyeImage;
+    @FXML
+    private Hyperlink forgotPassword; // Hyperlink for Forgot Password
     private TextField visiblePasswordField;
 
     @FXML
     private void initialize() {
-        //    eyeImage.setOnMouseClicked(event -> togglePasswordVisibility());
-
+        // Initialize password visibility toggle (if needed)
         visiblePasswordField = new TextField();
         visiblePasswordField.setManaged(false);
         visiblePasswordField.setVisible(false);
@@ -43,7 +47,6 @@ public class LoginController {
         visiblePasswordField.setPrefSize(password.getPrefWidth(), password.getPrefHeight());
         s.getChildren().add(visiblePasswordField);
     }
-
 
     @FXML
     private void login(ActionEvent event) {
@@ -65,6 +68,24 @@ public class LoginController {
         }
     }
 
+    @FXML
+    private void handleForgotPassword(ActionEvent event) {
+        String userEmail = email.getText().trim();
+
+        if (userEmail.isEmpty()) {
+            showAlert("Error", "Please enter your email address.", Alert.AlertType.ERROR);
+        } else {
+            // Reset the password and send it via email
+            String newPassword = DaoLogin.resetPasswordWithRandom(userEmail);
+
+            if (newPassword != null) {
+                showAlert("Success", "A new password has been sent to your email.", Alert.AlertType.INFORMATION);
+            } else {
+                showAlert("Error", "Failed to reset password. Please try again.", Alert.AlertType.ERROR);
+            }
+        }
+    }
+
     private void loadPageBasedOnRole(String role) {
         String fxmlFile;
         String title;
@@ -72,17 +93,17 @@ public class LoginController {
         switch (role) {
             case "client":
                 fxmlFile = "/Signup.fxml";
-                System.out.println("je suis "+role.toUpperCase()+"Client");
+                System.out.println("je suis " + role.toUpperCase() + "Client");
                 title = "Client Dashboard";
                 break;
             case "responsable_event":
                 fxmlFile = "/AfficherPersonne.fxml";
-                System.out.println("je suis "+role.toUpperCase()+"responsable_event");
+                System.out.println("je suis " + role.toUpperCase() + "responsable_event");
                 title = "Event Manager Dashboard";
                 break;
             case "responsable_hotel":
-                System.out.println("je suis "+role.toUpperCase()+"responsable_hotel");
-                fxmlFile = "/HotelManagerDashboard.fxml";
+                System.out.println("je suis " + role.toUpperCase() + "responsable_hotel");
+                fxmlFile = "/AfficherPersonne.fxml";
                 title = "Hotel Manager Dashboard";
                 break;
             default:
@@ -116,18 +137,6 @@ public class LoginController {
         alert.showAndWait();
     }
 
-
-    private void alert(String message, Alert.AlertType alertType) {
-        Alert alert = new Alert(alertType, message, ButtonType.OK);
-        alert.setHeaderText("Login Error");
-        alert.setTitle("Login Error");
-
-        alert.setOnCloseRequest(event -> email.requestFocus());
-
-
-        alert.show();
-    }
-
     @FXML
     private void signUp() {
         try {
@@ -135,19 +144,15 @@ public class LoginController {
             Parent root = loader.load();
             SignUpController signUpController = loader.getController();
 
-
             Stage currentStage = (Stage) s.getScene().getWindow();
-
 
             Scene scene = new Scene(root);
             currentStage.setScene(scene);
             currentStage.setTitle("Sign Up");
             currentStage.show();
         } catch (IOException e) {
-            alert("Failed to load SignUp.fxml", Alert.AlertType.ERROR);
+            showAlert("Error", "Failed to load SignUp.fxml.", Alert.AlertType.ERROR);
             e.printStackTrace();
         }
     }
-
-
 }

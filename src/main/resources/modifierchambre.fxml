@@ -10,7 +10,7 @@
 
     <TableView fx:id="tableView" layoutX="25.0" layoutY="50.0" prefHeight="300.0" prefWidth="550.0">
         <columns>
-            <TableColumn fx:id="colHotelId" text="Maticule hotel" />
+
             <TableColumn fx:id="colRoomNumber" text="Numéro de Chambre" />
             <TableColumn fx:id="colCapacity" text="Capacité" />
             <TableColumn fx:id="colAction" text="Actions" />

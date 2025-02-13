@@ -46,7 +46,7 @@ public class ModifierRoomController {
     }
 
     private void setupTableColumns() {
-        colHotelId.setCellValueFactory(new PropertyValueFactory<>("hotelId"));
+
         colRoomNumber.setCellValueFactory(new PropertyValueFactory<>("roomNumber"));
         colCapacity.setCellValueFactory(new PropertyValueFactory<>("capacity"));
     }

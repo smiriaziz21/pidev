@@ -31,6 +31,9 @@ public class ModifierHotelController {
     private TableColumn<Hotel, String> colLocation;
 
     @FXML
+    private TableColumn<Hotel, Integer> colStars; // Ajout de la colonne étoiles
+
+    @FXML
     private TableColumn<Hotel, Void> colAction;
 
     @FXML
@@ -39,14 +42,19 @@ public class ModifierHotelController {
     @FXML
     private TableView<Hotel> tableView;
 
+    @FXML
+    private TextField searchField; // Barre de recherche
+
     private ServiceHotel serviceHotel = new ServiceHotel();
     private int currentResponsableId;
+    private ObservableList<Hotel> hotelsList = FXCollections.observableArrayList(); // Liste complète des hôtels
 
     @FXML
     public void initialize() {
         setupTableColumns();
         setupActionColumn();
         setupModifyRoomColumn();
+        setupSearchFilter(); // Initialiser le filtre de recherche
     }
 
     public void setResponsableId(int responsableId) {
@@ -55,9 +63,10 @@ public class ModifierHotelController {
     }
 
     private void setupTableColumns() {
-        colId.setCellValueFactory(new PropertyValueFactory<>("id"));
+
         colName.setCellValueFactory(new PropertyValueFactory<>("name"));
         colLocation.setCellValueFactory(new PropertyValueFactory<>("location"));
+        colStars.setCellValueFactory(new PropertyValueFactory<>("etoiles")); // Utilisation de getEtoiles()
     }
 
     private void setupActionColumn() {
@@ -119,8 +128,8 @@ public class ModifierHotelController {
     private void loadHotels() {
         try {
             List<Hotel> hotels = serviceHotel.getAllByResponsableId(currentResponsableId);
-            ObservableList<Hotel> observableList = FXCollections.observableArrayList(hotels);
-            tableView.setItems(observableList);
+            hotelsList.setAll(hotels); // Charger tous les hôtels dans la liste
+            tableView.setItems(hotelsList);
         } catch (SQLException e) {
             showAlert("Erreur", "Erreur de chargement", e.getMessage(), Alert.AlertType.ERROR);
         }
@@ -130,12 +139,18 @@ public class ModifierHotelController {
         TextField nameField = new TextField(hotel.getName());
         TextField locationField = new TextField(hotel.getLocation());
 
+        // ComboBox pour les étoiles
+        ComboBox<Integer> starsComboBox = new ComboBox<>();
+        starsComboBox.getItems().addAll(1, 2, 3, 4, 5);
+        starsComboBox.setValue(hotel.getEtoiles()); // Utilisation de getEtoiles()
+
         Alert editDialog = new Alert(Alert.AlertType.CONFIRMATION);
-        editDialog.setTitle("Modifier Hotel");
-        editDialog.setHeaderText("Modification de l'hôtel : ");
+        editDialog.setTitle("Modifier Hôtel");
+        editDialog.setHeaderText("Modification de l'hôtel : " + hotel.getName());
         editDialog.getDialogPane().setContent(new VBox(5,
-                new Label("Nom:"), nameField,
-                new Label("Localisation:"), locationField
+                new Label("Nom :"), nameField,
+                new Label("Localisation :"), locationField,
+                new Label("Nombre d'étoiles :"), starsComboBox
         ));
 
         editDialog.showAndWait().ifPresent(response -> {
@@ -143,6 +158,7 @@ public class ModifierHotelController {
                 try {
                     hotel.setName(nameField.getText());
                     hotel.setLocation(locationField.getText());
+                    hotel.setEtoiles(starsComboBox.getValue()); // Utilisation de setEtoiles()
                     serviceHotel.update(hotel);
                     loadHotels();
                     showAlert("Succès", "Modification réussie", "Hôtel mis à jour avec succès", Alert.AlertType.INFORMATION);
@@ -178,5 +194,27 @@ public class ModifierHotelController {
         alert.setHeaderText(header);
         alert.setContentText(content);
         alert.showAndWait();
+    }
+
+    private void setupSearchFilter() {
+        searchField.textProperty().addListener((observable, oldValue, newValue) -> {
+            filterHotels(newValue); // Filtrer lors du changement de texte
+        });
+    }
+
+    private void filterHotels(String keyword) {
+        if (keyword == null || keyword.trim().isEmpty()) {
+            tableView.setItems(hotelsList); // Réinitialiser à la liste complète
+            return;
+        }
+
+        String lowerCaseKeyword = keyword.toLowerCase();
+        ObservableList<Hotel> filteredList = hotelsList.filtered(hotel ->
+                hotel.getName().toLowerCase().contains(lowerCaseKeyword) ||
+                        hotel.getLocation().toLowerCase().contains(lowerCaseKeyword) ||
+                        String.valueOf(hotel.getEtoiles()).contains(lowerCaseKeyword) // Utilisation de getEtoiles()
+        );
+
+        tableView.setItems(filteredList); // Afficher la liste filtrée
     }
 }

@@ -45,7 +45,7 @@ public class Suprimerchambre {
     }
 
     private void setupTable() {
-        colHotelId.setCellValueFactory(new PropertyValueFactory<>("hotelId"));
+
         colRoomNumber.setCellValueFactory(new PropertyValueFactory<>("roomNumber"));
         colCapacity.setCellValueFactory(new PropertyValueFactory<>("capacity"));
 

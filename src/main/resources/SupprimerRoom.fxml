@@ -9,8 +9,6 @@
         <!-- TableView to display rooms -->
         <TableView fx:id="roomTable" layoutX="25.0" layoutY="50.0" prefHeight="300.0" prefWidth="550.0">
             <columns>
-
-                <TableColumn fx:id="colHotelId" prefWidth="100.0" text="Matricule d'hotel" />
                 <TableColumn fx:id="colRoomNumber" prefWidth="150.0" text="Numero de chambre" />
                 <TableColumn fx:id="colCapacity" prefWidth="100.0" text="capacité" />
             </columns>

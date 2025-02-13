@@ -53,7 +53,7 @@ public class SuprimerHotelController {
     }
 
     private void setupTable() {
-        colId.setCellValueFactory(new PropertyValueFactory<>("id"));
+
         colName.setCellValueFactory(new PropertyValueFactory<>("name"));
         colLocation.setCellValueFactory(new PropertyValueFactory<>("location"));
 

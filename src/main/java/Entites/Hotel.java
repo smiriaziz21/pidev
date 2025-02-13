@@ -1,31 +1,28 @@
 package Entites;
 
-
 public class Hotel {
     private int id;
     private String name;
     private String location;
     private int responsableHotelId;
+    private int etoiles; // Ajout du champ étoiles
 
-    // Liste des chambres associées à cet hôtel
-   //private List<Room> rooms;
-
-    public Hotel(String name, String location, int responsableHotelId) {
+    // Constructeur avec étoiles
+    public Hotel(String name, String location, int responsableHotelId, int etoiles) {
         this.name = name;
         this.location = location;
         this.responsableHotelId = responsableHotelId;
-      //  this.rooms = new ArrayList<>();
+        this.etoiles = etoiles;
     }
 
-    public Hotel(int id, String name, String location, int responsableHotelId) {
-       this.id = id;
+    // Constructeur avec ID et étoiles
+    public Hotel(int id, String name, String location, int responsableHotelId, int etoiles) {
+        this.id = id;
         this.name = name;
         this.location = location;
         this.responsableHotelId = responsableHotelId;
-      //  this.rooms = new ArrayList<>();
+        this.etoiles = etoiles;
     }
-
-
 
     // Getters et Setters
     public int getId() {
@@ -60,6 +57,13 @@ public class Hotel {
         this.responsableHotelId = responsableHotelId;
     }
 
+    public int getEtoiles() {
+        return etoiles;
+    }
+
+    public void setEtoiles(int etoiles) {
+        this.etoiles = etoiles;
+    }
 
     @Override
     public String toString() {
@@ -68,6 +72,7 @@ public class Hotel {
                 ", name='" + name + '\'' +
                 ", location='" + location + '\'' +
                 ", responsableHotelId=" + responsableHotelId +
+                ", etoiles=" + etoiles +
                 '}';
     }
 }

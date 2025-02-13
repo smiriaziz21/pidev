@@ -2,17 +2,26 @@
 
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.VBox?>
 
 <VBox xmlns="http://javafx.com/javafx/11.0.1"
       xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="Controllers.ModifierHotelController">
+      fx:controller="Controllers.ModifierHotelController"
+      spacing="10"
+      alignment="TOP_CENTER"
+      prefHeight="400.0" prefWidth="600.0">
 
+    <!-- Barre de recherche -->
+    <TextField fx:id="searchField" promptText="Rechercher un hôtel..." />
+
+    <!-- TableView pour afficher les hôtels -->
     <TableView fx:id="tableView" prefHeight="300.0" prefWidth="600.0">
         <columns>
-            <TableColumn fx:id="colId" text="Matricule Hotel" />
+
             <TableColumn fx:id="colName" text="Nom" />
             <TableColumn fx:id="colLocation" text="Localisation" />
+            <TableColumn fx:id="colStars" text="Étoiles" />  <!-- ✅ Ajout de la colonne Étoiles -->
             <TableColumn fx:id="colAction" text="Actions" />
             <TableColumn fx:id="colModifyRoom" text="Modifier Chambre" />
         </columns>

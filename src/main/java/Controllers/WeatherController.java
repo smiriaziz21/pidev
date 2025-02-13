@@ -67,21 +67,20 @@ public class WeatherController {
             try {
                 JSONObject json = new JSONObject(weatherData);
 
-                // Extraction des données principales
+
                 String city = json.getString("name");
                 String weatherDescription = json.getJSONArray("weather").getJSONObject(0).getString("description");
                 double tempKelvin = json.getJSONObject("main").getDouble("temp");
                 double tempCelsius = tempKelvin - 273.15; // Conversion en °C
 
-                // Formatage de l'affichage
                 String formattedText = String.format(
-                        "🌍 City: %s\n🌤 Weather: %s\n🌡 Temperature: %.2f°C",
+                        "🌍 ville: %s\n🌤 meteo: %s\n🌡 Temperature: %.2f°C",
                         city, weatherDescription, tempCelsius
                 );
 
                 resultLabel.setText(formattedText);
             } catch (Exception e) {
-                resultLabel.setText("Error parsing weather data.");
+                resultLabel.setText("pas de donne meteo.");
                 e.printStackTrace();
             }
         });

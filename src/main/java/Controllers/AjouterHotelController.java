@@ -4,10 +4,7 @@ import Entites.Hotel;
 import Services.ServiceHotel;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 
 import java.sql.SQLException;
 
@@ -20,49 +17,58 @@ public class AjouterHotelController {
     private TextField txtLocalisation;
 
     @FXML
+    private ComboBox<String> comboEtoiles; // Nouveau champ pour les étoiles
+
+    @FXML
     private Button btnAjouter;
+
+    @FXML
+    void initialize() {
+        // Ajout des valeurs dans le ComboBox au lancement du formulaire
+        comboEtoiles.getItems().addAll("1 ★", "2 ★★", "3 ★★★", "4 ★★★★", "5 ★★★★★");
+        comboEtoiles.setValue("3 ★★★"); // Valeur par défaut
+    }
 
     @FXML
     void ajouterHotel(ActionEvent event) {
         // Vérification des champs
-        if (txtNom.getText().isEmpty() || txtLocalisation.getText().isEmpty()) {
-            showAlert(AlertType.ERROR,
+        if (txtNom.getText().isEmpty() || txtLocalisation.getText().isEmpty() || comboEtoiles.getValue() == null) {
+            showAlert(Alert.AlertType.ERROR,
                     "Champs manquants",
                     "Veuillez remplir tous les champs requis",
-                    "Tous les champs doivent être remplis pour ajouter un hôtel");
+                    "Tous les champs doivent être remplis pour ajouter un hôtel.");
             return;
         }
 
         try {
-
             String nom = txtNom.getText();
             String localisation = txtLocalisation.getText();
-            int idResponsable = 1;
+            int idResponsable = 1; // À remplacer avec l'ID réel
+            int etoiles = Character.getNumericValue(comboEtoiles.getValue().charAt(0)); // Extraction du chiffre
 
-            Hotel hotel = new Hotel(nom, localisation, idResponsable);
-
+            Hotel hotel = new Hotel(nom, localisation, idResponsable, etoiles);
 
             ServiceHotel serviceHotel = new ServiceHotel();
             serviceHotel.ajouter(hotel);
 
-            showAlert(AlertType.INFORMATION,
+            showAlert(Alert.AlertType.INFORMATION,
                     "Succès",
                     "Hôtel ajouté avec succès",
-                    "L'hôtel a été enregistré dans la base de données");
-
+                    "L'hôtel a été enregistré ");
 
             txtNom.clear();
             txtLocalisation.clear();
+            comboEtoiles.setValue("3 ★★★");
 
         } catch (SQLException e) {
-            showAlert(AlertType.ERROR,
+            showAlert(Alert.AlertType.ERROR,
                     "Erreur technique",
                     "Échec de l'ajout",
                     "Erreur lors de la communication avec la base de données :\n" + e.getMessage());
         }
     }
 
-    private void showAlert(AlertType type, String title, String header, String content) {
+    private void showAlert(Alert.AlertType type, String title, String header, String content) {
         Alert alert = new Alert(type);
         alert.setTitle(title);
         alert.setHeaderText(header);

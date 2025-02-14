@@ -18,7 +18,10 @@
             <Button text="📝 Modifier Hotel" fx:id="btnModifierHotel" style="-fx-background-color: #3498DB; -fx-text-fill: white;" />
             <Button text="❌ Supprimer Hotel" fx:id="btnSupprimerHotel" style="-fx-background-color: #3498DB; -fx-text-fill: white;" />
             <Button text="🛏 Ajouter Chambre" fx:id="btnAjouterChambre" style="-fx-background-color: #E67E22; -fx-text-fill: white;" />
+            <Button fx:id="logoutButton" text="Logout" onAction="#handleLogout"
+                    style="-fx-background-color: #FF5733; -fx-text-fill: white; -fx-font-size: 14px;"/>
         </VBox>
+
     </left>
 
     <!-- Contenu Principal -->

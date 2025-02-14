@@ -8,14 +8,14 @@
 
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="Controllers.ResponsableEventDashboard"
+            fx:controller="Controllers.DashboardClient"
             prefHeight="400.0" prefWidth="600.0">
     <left>
         <VBox spacing="10" style="-fx-background-color: #2C3E50; -fx-padding: 15;">
-            <Label text="Gestion Events" style="-fx-text-fill: white; -fx-font-size: 16px;" />
-            <Button text="🏨 EventManagement" fx:id="btnEventMan" style="-fx-background-color: #3498DB; -fx-text-fill: white;" />
-            <Button text="📝 ReservationManagement" fx:id="btnRes" style="-fx-background-color: #3498DB; -fx-text-fill: white;" />
-            <Button text="📝 facture" fx:id="btnFact" style="-fx-background-color: #3498DB; -fx-text-fill: white;" />
+            <Label text="Client" style="-fx-text-fill: white; -fx-font-size: 16px;" />
+            <Button text="🏨 Event/res" fx:id="btnEventMan" style="-fx-background-color: #3498DB; -fx-text-fill: white;" />
+            <Button text="📝 feedback" fx:id="btnRes" style="-fx-background-color: #3498DB; -fx-text-fill: white;" />
+
             <Button fx:id="logoutButton" text="Logout" onAction="#handleLogout"
                     style="-fx-background-color: #FF5733; -fx-text-fill: white; -fx-font-size: 14px;"/>
         </VBox>
@@ -26,5 +26,4 @@
     <center>
         <AnchorPane fx:id="mainContent" style="-fx-background-color: #ECF0F1;" />
     </center>
-
 </BorderPane>

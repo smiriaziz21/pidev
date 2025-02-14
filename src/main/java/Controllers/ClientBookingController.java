@@ -246,4 +246,6 @@ public class ClientBookingController {
             showAlert("Error opening Activities interface: " + e.getMessage());
         }
     }
+
+
 }

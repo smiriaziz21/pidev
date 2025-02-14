@@ -72,7 +72,7 @@ public class LoginController {
 
         switch (role) {
             case "client":
-                fxmlFile = "/ClientBooking.fxml";
+                fxmlFile = "/dashboardClient.fxml";
                 title = "Client Dashboard";
                 break;
             case "responsable_event":
@@ -106,8 +106,8 @@ public class LoginController {
                 dashboardController.setResponsableId(Users.getCurrentUser().getId());
 
             } else if (role.equals("client")) {
-                ClientBookingController clientController = loader.getController();
-                clientController.setClientId(Users.getCurrentUser().getId()); // Pass the client ID
+                DashboardClient clientController = loader.getController();
+                clientController.setClient(Users.getCurrentUser().getId()); // Pass the client ID
             }else if (role.equals("responsable_hotel")) {
                 DashboardController dashboardController = loader.getController();
                 dashboardController.setResponsableId(Users.getCurrentUser().getId()); // Pass the client ID

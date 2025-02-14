@@ -12,21 +12,20 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-
-public class ResponsableEventDashboard {
+public class DashboardClient {
     // Déclaration des composants FXML
     @FXML
     private Button btnEventMan;
     @FXML private Button btnRes;
-    @FXML private Button btnFact;
+
 
     @FXML private AnchorPane mainContent;
     @FXML private Button logoutButton; // Add this to your controller
 
-    private int currentResponsableId;
+    private int clientId;
 
-    public void setResponsableId(int currentResponsableId) {
-        this.currentResponsableId = currentResponsableId;
+    public void setClient(int clientId) {
+        this.clientId = clientId;
     }
 
     @FXML
@@ -35,9 +34,9 @@ public class ResponsableEventDashboard {
     }
 
     private void configureButtonActions() {
-        btnEventMan.setOnAction(e -> loadDataPage("EventManagement.fxml"));
-        btnRes.setOnAction(e -> loadDataPage("AdminReservation.fxml"));
-        btnFact.setOnAction(e -> loadDataPage("FactureAffiche.fxml"));
+        btnEventMan.setOnAction(e -> loadDataPage("ClientBooking.fxml"));
+        btnRes.setOnAction(e -> loadDataPage("FeedbackAffiche.fxml"));
+
 
     }
 
@@ -48,14 +47,13 @@ public class ResponsableEventDashboard {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/" + fxmlFile));
             Parent root = loader.load();
 
-            if (loader.getController() instanceof EventController) {
-                ((EventController) loader.getController())
-                        .setResponsableId(currentResponsableId);
-            } else if (loader.getController() instanceof AdminReservationsController) {
-                ((AdminReservationsController) loader.getController())
-                        .setResponsableId(currentResponsableId);
-                ((AdminReservationsController) loader.getController()).setConnection(DataSource.getInstance().getCon());
-                ((AdminReservationsController) loader.getController()).initController();
+            if (loader.getController() instanceof ClientBookingController) {
+                ((ClientBookingController) loader.getController())
+                        .setClientId(clientId);
+            } else if (loader.getController() instanceof FeedbackAfficheController) {
+                ((FeedbackAfficheController) loader.getController())
+                        .setClientId(clientId);
+
             }
 
             mainContent.getChildren().setAll(root);
@@ -75,7 +73,7 @@ public class ResponsableEventDashboard {
     }
 
     public void setCurrentResponsableId(int id) {
-        this.currentResponsableId = id;
+        this.clientId = id;
     }
     @FXML
     private void handleLogout() {
@@ -99,5 +97,4 @@ public class ResponsableEventDashboard {
         alert.setContentText(message);
         alert.show();
     }
-
 }

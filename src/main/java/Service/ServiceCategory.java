@@ -37,14 +37,17 @@ public class ServiceCategory {
         return null;
     }
     public void update(Categories category) throws SQLException {
-        String req = "UPDATE categories SET name = ?, description = ? WHERE id = ?";
-        try (PreparedStatement pst = con.prepareStatement(req)) {
-            pst.setString(1, category.getName());
-            pst.setString(2, category.getDescription());
-            pst.setInt(3, category.getId());
-            pst.executeUpdate();
+        String query = "UPDATE categories SET name = ?, description = ? WHERE id = ?";
+        try (PreparedStatement stmt = con.prepareStatement(query)) {
+            stmt.setString(1, category.getName());
+            stmt.setString(2, category.getDescription());
+            stmt.setInt(3, category.getId());
+
+            int rowsUpdated = stmt.executeUpdate();
+            System.out.println("Rows updated: " + rowsUpdated);
         }
     }
+
 
     public Categories findById(int id) throws SQLException {
         String req = "SELECT * FROM categories WHERE id = ?";

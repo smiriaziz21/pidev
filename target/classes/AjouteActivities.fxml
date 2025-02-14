@@ -7,37 +7,59 @@
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TableColumn?>
+
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.text.Font?>
-
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.AjouterActiviteController" style="-fx-background-color: #f3f4f6;">
+<AnchorPane prefHeight="500.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.AjouterActiviteController" style="-fx-background-color: #f3f4f6;">
     <children>
-        <Label layoutX="184.0" layoutY="125.0" text="Nom:" style="-fx-text-fill: #37474f; -fx-font-size: 18px; -fx-font-weight: bold;" />
-        <TextField fx:id="txtname" layoutX="328.0" layoutY="126.0" prefWidth="200.0" style="-fx-background-color: #ffffff; -fx-border-color: #cfd8dc; -fx-border-radius: 5px; -fx-padding: 5px; -fx-font-size: 14px;" />
+        <VBox layoutX="150.0" layoutY="50.0" spacing="10.0">
+            <HBox spacing="10.0">
+                <Label text="Nom:" style="-fx-text-fill: #37474f; -fx-font-size: 18px; -fx-font-weight: bold;" />
+                <TextField fx:id="txtname" prefWidth="250.0" style="-fx-background-color: #ffffff; -fx-border-color: #cfd8dc; -fx-border-radius: 5px; -fx-padding: 5px; -fx-font-size: 14px;" />
+            </HBox>
 
-        <Label layoutX="184.0" layoutY="165.0" text="Description:" style="-fx-text-fill: #37474f; -fx-font-size: 18px; -fx-font-weight: bold;" />
-        <TextArea fx:id="txtDescription" layoutX="328.0" layoutY="166.0" prefWidth="200.0" style="-fx-background-color: #ffffff; -fx-border-color: #cfd8dc; -fx-border-radius: 5px; -fx-padding: 5px; -fx-font-size: 14px;" />
+            <HBox spacing="10.0">
+                <Label text="Description:" style="-fx-text-fill: #37474f; -fx-font-size: 18px; -fx-font-weight: bold;" />
+                <TextArea fx:id="txtDescription" prefWidth="250.0" prefHeight="60.0" wrapText="true" style="-fx-background-color: #ffffff; -fx-border-color: #cfd8dc; -fx-border-radius: 5px; -fx-padding: 5px; -fx-font-size: 14px;" />
+            </HBox>
 
-        <Label layoutX="184.0" layoutY="205.0" text="Start Date:" style="-fx-text-fill: #37474f; -fx-font-size: 18px; -fx-font-weight: bold;" />
-        <DatePicker fx:id="dpStartDate" layoutX="328.0" layoutY="206.0" prefWidth="200.0" />
+            <HBox spacing="10.0">
+                <Label text="Start Date:" style="-fx-text-fill: #37474f; -fx-font-size: 18px; -fx-font-weight: bold;" />
+                <DatePicker fx:id="dpStartDate" prefWidth="250.0" />
+            </HBox>
 
-        <Label layoutX="184.0" layoutY="245.0" text="End Date:" style="-fx-text-fill: #37474f; -fx-font-size: 18px; -fx-font-weight: bold;" />
-        <DatePicker fx:id="dpEndDate" layoutX="328.0" layoutY="246.0" prefWidth="200.0" />
+            <HBox spacing="10.0">
+                <Label text="End Date:" style="-fx-text-fill: #37474f; -fx-font-size: 18px; -fx-font-weight: bold;" />
+                <DatePicker fx:id="dpEndDate" prefWidth="250.0" />
+            </HBox>
 
-        <Label layoutX="184.0" layoutY="285.0" text="Location:" style="-fx-text-fill: #37474f; -fx-font-size: 18px; -fx-font-weight: bold;" />
-        <TextField fx:id="txtLocation" layoutX="328.0" layoutY="286.0" prefWidth="200.0" style="-fx-background-color: #ffffff; -fx-border-color: #cfd8dc; -fx-border-radius: 5px; -fx-padding: 5px; -fx-font-size: 14px;" />
+            <HBox spacing="10.0">
+                <Label text="Location:" style="-fx-text-fill: #37474f; -fx-font-size: 18px; -fx-font-weight: bold;" />
+                <TextField fx:id="txtLocation" prefWidth="250.0" style="-fx-background-color: #ffffff; -fx-border-color: #cfd8dc; -fx-border-radius: 5px; -fx-padding: 5px; -fx-font-size: 14px;" />
+            </HBox>
 
-        <Label layoutX="184.0" layoutY="325.0" text="Responsible ID:" style="-fx-text-fill: #37474f; -fx-font-size: 18px; -fx-font-weight: bold;" />
-        <TextField fx:id="txtResponsibleId" layoutX="328.0" layoutY="326.0" prefWidth="200.0" style="-fx-background-color: #ffffff; -fx-border-color: #cfd8dc; -fx-border-radius: 5px; -fx-padding: 5px; -fx-font-size: 14px;" />
+            <HBox spacing="10.0">
+                <Label text="Responsible ID:" style="-fx-text-fill: #37474f; -fx-font-size: 18px; -fx-font-weight: bold;" />
+                <TextField fx:id="txtResponsibleId" prefWidth="250.0" style="-fx-background-color: #ffffff; -fx-border-color: #cfd8dc; -fx-border-radius: 5px; -fx-padding: 5px; -fx-font-size: 14px;" />
+            </HBox>
+        </VBox>
 
-        <Label layoutX="184.0" layoutY="365.0" text="Category:" style="-fx-text-fill: #37474f; -fx-font-size: 18px; -fx-font-weight: bold;" />
-        <HBox layoutX="328.0" layoutY="366.0" spacing="10">
-            <ComboBox fx:id="cbCategory" prefWidth="150.0" editable="true" />
-            <Button text="Add Category" onAction="#openAddCategoryWindow" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold; -fx-padding: 5px; -fx-border-radius: 5px; -fx-background-radius: 5px;" />
-        </HBox>
+        <Button layoutX="420.0" layoutY="340.0" text="Add Category" onAction="#openAddCategoryWindow"
+                style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold; -fx-padding: 5px; -fx-border-radius: 5px; -fx-background-radius: 5px;" />
 
-        <Button layoutX="160.0" layoutY="420.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="290.0"
-                style="-fx-background-color: #5c6bc0; -fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: bold; -fx-border-radius: 10px; -fx-background-radius: 10px;
+        <TableView fx:id="categoryTable" layoutX="150.0" layoutY="380.0" prefWidth="500.0" prefHeight="150.0">
+            <columns>
+                <TableColumn fx:id="categoryNameColumn" text="Category Name" prefWidth="200.0"/>
+                <TableColumn fx:id="updateColumn" text="Update" prefWidth="150.0"/>
+                <TableColumn fx:id="deleteColumn" text="Delete" prefWidth="150.0"/>
+            </columns>
+        </TableView>
+
+
+        <Button layoutX="160.0" layoutY="490.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="290.0"
+                style="-fx-background-color: #5c6bc0; -fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: bold; -fx-border-radius: 10px; -fx-background-radius:  10px;
                        -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 5);"
                 onAction="#ajouterActivite" text="Ajouter" />
     </children>

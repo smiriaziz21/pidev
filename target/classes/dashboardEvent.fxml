@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="Controllers.ResponsableEventDashboard"
+            prefHeight="400.0" prefWidth="600.0">
+    <left>
+        <VBox spacing="10" style="-fx-background-color: #2C3E50; -fx-padding: 15;">
+            <Label text="Gestion Hotels  Chambres" style="-fx-text-fill: white; -fx-font-size: 16px;" />
+            <Button text="🏨 EventManagement" fx:id="btnEventMan" style="-fx-background-color: #3498DB; -fx-text-fill: white;" />
+            <Button text="📝 ReservationManagement" fx:id="btnRes" style="-fx-background-color: #3498DB; -fx-text-fill: white;" />
+
+        </VBox>
+    </left>
+
+    <!-- Contenu Principal -->
+    <center>
+        <AnchorPane fx:id="mainContent" style="-fx-background-color: #ECF0F1;" />
+    </center>
+
+</BorderPane>

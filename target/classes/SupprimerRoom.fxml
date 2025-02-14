@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.input.MouseEvent?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:id="hotelPane" fx:controller="Controllers.SuprimerHotelController" prefHeight="400.0" prefWidth="600.0">
+    <children>
+        <!-- TableView to display hotels -->
+        <TableView fx:id="hotelTable" layoutX="25.0" layoutY="50.0" prefHeight="300.0" prefWidth="550.0">
+            <columns>
+
+                <TableColumn fx:id="colName" prefWidth="150.0" text="Nom" />
+                <TableColumn fx:id="colLocation" prefWidth="150.0" text="Localisation" />
+            </columns>
+        </TableView>
+
+        <!-- Button to delete selected hotel -->
+        <Button fx:id="deleteButton" layoutX="250.0" layoutY="370.0" mnemonicParsing="false" onAction="#deleteHotel" text="Supprimer" disable="true" />
+
+        <!-- Button to navigate to SupprimerRoom.fxml -->
+        <Button fx:id="goToRoomButton" layoutX="100.0" layoutY="370.0" mnemonicParsing="false" onAction="#goToSupprimerRoom" text="suprimer chambre" />
+    </children>
+</AnchorPane>

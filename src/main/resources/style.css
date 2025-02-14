@@ -1,0 +1,62 @@
+/* JavaFX CSS - Leave this comment until you have at least create one rule which uses -fx-Property */
+/* styles.css */
+
+/* Styles pour l'élément BorderPane */
+.border-pane {
+    -fx-background-color: #ffffff;
+}
+
+/* Styles pour le texte "Gestion De Facture" */
+.title-text {
+    -fx-fill: #cf8383;
+    -fx-font-family: "Yu Gothic Regular";
+    -fx-font-size: 37;
+}
+
+/* Styles pour l'image "facture.png" */
+.image-view {
+    -fx-fit-width: 364;
+    -fx-fit-height: 219;
+}
+
+/* Styles pour les champs de texte */
+.text-field {
+    -fx-prompt-text-fill: #aaaaaa;
+    -fx-background-color: transparent;
+    -fx-border-color: #0596ff;
+    -fx-border-width: 0px 0px 2px 0px;
+}
+
+/* Styles pour le bouton "Login" */
+.login-button {
+    -fx-background-color: #0598ff;
+    -fx-text-fill: #f4efef;
+}
+
+/* Styles pour le lien "Forget Your Password" */
+.hyperlink {
+    -fx-text-fill: #0000ff;
+}
+
+/* Styles pour le texte "User Login" */
+.login-text {
+    -fx-font-family: "Arial Bold";
+    -fx-font-size: 14;
+}
+
+/* Styles pour les images */
+.image {
+    -fx-fit-width: 77;
+    -fx-fit-height: 68;
+}
+
+/* Styles pour le bouton "Sign Up" */
+.sign-up-button {
+    -fx-background-color: #0598ff;
+    -fx-text-fill: #eae6e6;
+}
+
+/* Styles pour le StackPane */
+.stack-pane {
+    -fx-padding: 10;
+}

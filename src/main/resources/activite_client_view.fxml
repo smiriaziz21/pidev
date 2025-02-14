@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="Controllers.ActiviteClientView"
+            prefHeight="400.0" prefWidth="600.0">
+    <VBox spacing="10" layoutX="50.0" layoutY="50.0">
+
+
+
+
+
+
+
+        <!-- TableView affichant les activités -->
+        <TableView fx:id="tablev" prefHeight="400.0" prefWidth="1000.0">
+            <columns>
+                <TableColumn fx:id="colname" text="Name" prefWidth="100.0"/>
+                <TableColumn fx:id="coldescription" text="Description" prefWidth="150.0"/>
+                <TableColumn fx:id="collocation" text="Location" prefWidth="100.0"/>
+                <TableColumn fx:id="colstartDate" text="Start Date" prefWidth="100.0"/>
+                <TableColumn fx:id="colendDate" text="End Date" prefWidth="100.0"/>
+            </columns>
+        </TableView>
+    </VBox>
+</AnchorPane>

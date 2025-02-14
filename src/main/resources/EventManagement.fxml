@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/11.0.1"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="Controllers.EventController"
+            style="-fx-background-color: #f5f6fa;">
+
+    <VBox spacing="10" AnchorPane.topAnchor="10" AnchorPane.leftAnchor="10" AnchorPane.rightAnchor="10">
+        <!-- Input Form -->
+        <GridPane hgap="10" vgap="10">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
+
+            <!-- Title -->
+            <Label text="Title:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+            <TextField fx:id="titleField" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+            <!-- Description -->
+            <Label text="Description:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+            <TextArea fx:id="descriptionArea" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+            <!-- Date -->
+            <Label text="Date:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+            <DatePicker fx:id="datePicker" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+
+            <!-- Responsable -->
+            <Label text="Responsable:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+            <ComboBox fx:id="responsableComboBox" GridPane.columnIndex="1" GridPane.rowIndex="3" editable="false" disable="true"/>
+
+
+            <!-- Hotel -->
+            <Label text="Hotel:" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
+            <ComboBox fx:id="hotelComboBox" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+
+            <!-- Capacity -->
+            <Label text="Capacity:" GridPane.columnIndex="0" GridPane.rowIndex="5"/>
+            <TextField fx:id="capacityField" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
+
+            <!-- Buttons -->
+            <HBox spacing="10" GridPane.columnIndex="1" GridPane.rowIndex="6">
+                <Button text="Add" onAction="#handleAdd" style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
+                <Button text="Update" onAction="#handleUpdate" style="-fx-background-color: #2196F3; -fx-text-fill: white;"/>
+                <Button text="Delete" onAction="#handleDelete" style="-fx-background-color: #f44336; -fx-text-fill: white;"/>
+            </HBox>
+        </GridPane>
+
+        <!-- Event Table -->
+        <TableView fx:id="eventTable" VBox.vgrow="ALWAYS">
+            <columns>
+
+                <TableColumn fx:id="titleColumn" text="Title"/>
+                <TableColumn fx:id="descriptionColumn" text="Description"/>
+                <TableColumn fx:id="dateColumn" text="Date"/>
+                <TableColumn fx:id="responsableColumn" text="Responsable"/>
+                <TableColumn fx:id="hotelColumn" text="Hotel"/>
+                <TableColumn fx:id="capacityColumn" text="Capacity"/>
+                <TableColumn fx:id="colActions" text="Actions"/>
+            </columns>
+        </TableView>
+    </VBox>
+</AnchorPane>

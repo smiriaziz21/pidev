@@ -1,30 +1,30 @@
 package Entite;
 
-import java.util.Date;
+import java.io.Serializable;
+import java.time.LocalDate;
 
-public class Event {
+public class Event implements Serializable {
     private int id;
     private String title;
     private String description;
-    private Date date;
-    private int responsableEventId;
+    private LocalDate date;
+    private Integer capacity;
+    private Integer hotelId;
+    private Integer responsibleEventId;
 
-    public Event(int id, String title, String description, Date date, int responsableEventId) {
+    // Constructor
+    public Event(int id, String title, String description, LocalDate date, Integer capacity, Integer hotelId, Integer responsibleEventId) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.date = date;
-        this.responsableEventId = responsableEventId;
-    }
-
-    public Event(String title, String description, Date date, int responsableEventId) {
-        this.title = title;
-        this.description = description;
-        this.date = date;
-        this.responsableEventId = responsableEventId;
+        this.capacity = capacity;
+        this.hotelId = hotelId;
+        this.responsibleEventId = responsibleEventId;
     }
 
     // Getters and Setters
+
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 
@@ -34,20 +34,22 @@ public class Event {
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
 
-    public Date getDate() { return date; }
-    public void setDate(Date date) { this.date = date; }
+    public LocalDate getDate() { return date; }
+    public void setDate(LocalDate date) { this.date = date; }
 
-    public int getResponsableEventId() { return responsableEventId; }
-    public void setResponsableEventId(int responsableEventId) { this.responsableEventId = responsableEventId; }
+    public Integer getCapacity() { return capacity; }
+    public void setCapacity(Integer capacity) { this.capacity = capacity; }
+
+    public Integer getHotelId() { return hotelId; }
+    public void setHotelId(Integer hotelId) { this.hotelId = hotelId; }
+
+    public Integer getResponsibleEventId() { return responsibleEventId; }
+    public void setResponsibleEventId(Integer responsibleEventId) { this.responsibleEventId = responsibleEventId; }
 
     @Override
     public String toString() {
-        return "Event{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", description='" + description + '\'' +
-                ", date=" + date +
-                ", responsableEventId=" + responsableEventId +
-                '}';
+        return "Event{" + "id=" + id + ", title='" + title + '\'' + ", description='" + description + '\'' +
+                ", date=" + date + ", capacity=" + capacity + ", hotelId=" + hotelId +
+                ", responsibleEventId=" + responsibleEventId + '}';
     }
 }

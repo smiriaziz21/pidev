@@ -4,102 +4,191 @@ import Entite.Activities;
 import Service.ServiceActivities;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.HBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import javafx.util.Callback;
 
 import java.io.IOException;
+import java.net.URL;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
-public class AfficheActiviteController {
-
-    @FXML
-    private TableColumn<Activities, Integer> colid;
-
-    @FXML
-    private TableColumn<Activities, String> colname;
-
-    @FXML
-    private TableColumn<Activities, Void> colActions; // New Column for Actions
+public class AfficheActiviteController implements Initializable {
 
     @FXML
     private TableView<Activities> tablev;
-
-    private ServiceActivities serviceActivities = new ServiceActivities();
+    @FXML
+    private TableColumn<Activities, String> colname;
+    @FXML
+    private TableColumn<Activities, String> coldescription;
+    @FXML
+    private TableColumn<Activities, String> collocation;
+    @FXML
+    private TableColumn<Activities, String> colstartDate;
+    @FXML
+    private TableColumn<Activities, String> colendDate;
+    @FXML
+    private TableColumn<Activities, Void> colActions; // Corrected to Activities and Void
 
     @FXML
-    void initialize() {
+    private Label lblWeather;
+
+
+    private final ServiceActivities service = new ServiceActivities();
+    private ObservableList<Activities> activitiesList = FXCollections.observableArrayList();
+    private int eventId;
+    private int responsableId;
+    public void setEventId(int eventId) {
+        this.eventId = eventId;
+        loadActivities(); // Reload activities for the specific event
+    }
+    public void setResponsableId(int responsableId) {
+        this.responsableId = responsableId;
+    }
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        loadActivities();
+        setupActionButtons();
+        colname.setCellValueFactory(new PropertyValueFactory<>("name"));
+        coldescription.setCellValueFactory(new PropertyValueFactory<>("description"));
+        collocation.setCellValueFactory(new PropertyValueFactory<>("location"));
+        colstartDate.setCellValueFactory(new PropertyValueFactory<>("startDate"));
+        colendDate.setCellValueFactory(new PropertyValueFactory<>("endDate"));
+        setupActionButtons();
+    }
+
+
+    void loadActivities() {
         try {
-            List<Activities> list = serviceActivities.getAll();
-            ObservableList<Activities> ob = FXCollections.observableList(list);
-            tablev.setItems(ob);
+            // Fetch activities for the specific event
+            List<Activities> allActivities = service.getAll();
+            List<Activities> filteredActivities = allActivities.stream()
+                    .filter(activity -> activity.getIdEvent() == eventId)
+                    .collect(Collectors.toList());
 
-            colid.setCellValueFactory(new PropertyValueFactory<>("id"));
-            colname.setCellValueFactory(new PropertyValueFactory<>("name"));
-
-            // Add action buttons (Edit & Delete)
-            addButtonToTable();
+            // Update the table
+            activitiesList.setAll(filteredActivities);
+            tablev.setItems(activitiesList);
         } catch (SQLException e) {
-            System.out.println(e);
+            showErrorMessage("Error loading activities", e);
+        }
+    }
+    private void setupActionButtons() {
+
+        Callback<TableColumn<Activities, Void>, TableCell<Activities, Void>> cellFactory = param -> new TableCell<>() {
+            private final Button btnUpdate = new Button("Update");
+            private final Button btnDelete = new Button("Delete");
+
+            {
+                btnUpdate.setOnAction((ActionEvent event) -> {
+                    Activities activity = getTableView().getItems().get(getIndex());
+                    openUpdateWindow(activity);
+                });
+                btnDelete.setOnAction((ActionEvent event) -> {
+                    Activities activity = getTableView().getItems().get(getIndex());
+                    deleteActivity(activity);
+                });
+
+                // Style buttons
+                btnUpdate.setStyle("-fx-background-color: #ffa726; -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold;");
+                btnDelete.setStyle("-fx-background-color: #e53935; -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold;");
+            }
+
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    HBox hbox = new HBox(10, btnUpdate, btnDelete);
+                    setGraphic(hbox);
+                }
+            }
+        };
+        colActions.setCellFactory(cellFactory);
+    }
+
+    private void deleteActivity(Activities activity) {
+        try {
+            service.delete(activity.getId());
+            activitiesList.remove(activity);
+        } catch (SQLException e) {
+            showErrorMessage("Error deleting activity", e);
         }
     }
 
-    private void addButtonToTable() {
-        Callback<TableColumn<Activities, Void>, TableCell<Activities, Void>> cellFactory = new Callback<>() {
-            @Override
-            public TableCell<Activities, Void> call(final TableColumn<Activities, Void> param) {
-                return new TableCell<>() {
-                    private final Button editButton = new Button("Edit");
-                    private final Button deleteButton = new Button("Delete");
+    private void openUpdateWindow(Activities activity) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ModifierActivite.fxml"));
+            Parent root = loader.load();
 
-                    {
-                        editButton.setStyle("-fx-background-color: #ffa726; -fx-text-fill: white; -fx-border-radius: 5px;");
-                        deleteButton.setStyle("-fx-background-color: #e53935; -fx-text-fill: white; -fx-border-radius: 5px;");
+            ModifierActiviteController controller = loader.getController();
+            controller.initData(activity);
 
-                        editButton.setOnAction(event -> {
-                            Activities activite = getTableView().getItems().get(getIndex());
-                            System.out.println("Editing: " + activite.getName());
-                            // Implement edit logic here (e.g., open edit form)
-                        });
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setTitle("Update Activity");
+            stage.showAndWait();
 
-                        deleteButton.setOnAction(event -> {
-                            Activities activite = getTableView().getItems().get(getIndex());
-                            tablev.getItems().remove(activite);
-                            System.out.println("Deleted: " + activite.getName());
-                            // Implement delete logic in database if needed
-                        });
-                    }
+            loadActivities();
+        } catch (IOException e) {
+            showErrorMessage("Error opening update window", e);
+        }
+    }
 
-                    @Override
-                    public void updateItem(Void item, boolean empty) {
-                        super.updateItem(item, empty);
-                        if (empty) {
-                            setGraphic(null);
-                        } else {
-                            editButton.setMinWidth(60);
-                            deleteButton.setMinWidth(70);
-                            setGraphic(new javafx.scene.layout.HBox(10, editButton, deleteButton));
-                        }
-                    }
-                };
-            }
-        };
+    private void openAddWindow() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AjouteActivities.fxml"));
+            Parent root = loader.load();
 
-        colActions.setCellFactory(cellFactory);
+            // Pass the event ID and responsable ID to the Add Activity controller
+            AjouterActiviteController controller = loader.getController();
+            controller.setEventId(eventId);
+            controller.setResponsableId(responsableId); // Pass the responsable ID
+            controller.setParentController(this);
+
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setTitle("Add New Activity");
+            stage.showAndWait();
+
+            loadActivities();
+        } catch (IOException e) {
+            showErrorMessage("Error opening add window", e);
+        }
+    }
+
+    @FXML
+    private void handleAddActivity(ActionEvent event) {
+        openAddWindow();
     }
 
     @FXML
     void Back(ActionEvent event) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/AjouterActivities.fxml"));
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/HomePage.fxml"));
         Parent root = loader.load();
         tablev.getScene().setRoot(root);
+    }
+
+    private void showErrorMessage(String message, Exception e) {
+
+        Alert alert = new Alert(Alert.AlertType.ERROR, message + ": " + e.getMessage(), ButtonType.OK);
+        alert.showAndWait();
+        e.printStackTrace();
     }
 }

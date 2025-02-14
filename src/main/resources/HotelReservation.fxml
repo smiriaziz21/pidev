@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+            prefHeight="400" prefWidth="600">
+
+    <VBox spacing="10" AnchorPane.topAnchor="10" AnchorPane.leftAnchor="10"
+          AnchorPane.rightAnchor="10" AnchorPane.bottomAnchor="10">
+
+        <!-- Title -->
+        <Label text="Hotel Reservation Management" style="-fx-font-size: 20; -fx-font-weight: bold;"/>
+
+        <!-- Input Form -->
+        <GridPane hgap="10" vgap="10">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
+
+            <!-- Hotel Name Input -->
+            <Label text="Hotel Name:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+            <TextField fx:id="hotelNameField" promptText="Enter hotel name" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+            <!-- Location Input -->
+            <Label text="Location:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+            <TextField fx:id="locationField" promptText="Enter location" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+            <!-- Number of People Input -->
+            <Label text="Number of People:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+            <TextField fx:id="numberOfPeopleField" promptText="Enter number of people" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+
+            <!-- Action Button -->
+            <Button text="Add Reservation" fx:id="addButton" style="-fx-background-color: #4CAF50; -fx-text-fill: white;"
+                    GridPane.columnIndex="1" GridPane.rowIndex="3" GridPane.halignment="RIGHT"/>
+        </GridPane>
+
+        <!-- Table View -->
+        <TableView fx:id="hotelReservationTable" VBox.vgrow="ALWAYS">
+            <columns>
+                <TableColumn fx:id="hotelNameColumn" text="Hotel Name" prefWidth="200"/>
+                <TableColumn fx:id="locationColumn" text="Location" prefWidth="200"/>
+                <TableColumn fx:id="numberOfPeopleColumn" text="Number of People" prefWidth="150"/>
+            </columns>
+            <columnResizePolicy>
+                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+            </columnResizePolicy>
+        </TableView>
+
+    </VBox>
+</AnchorPane>

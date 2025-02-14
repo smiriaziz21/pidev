@@ -1,44 +1,41 @@
 package Entite;
 
+import javafx.beans.property.*;
+
 public class Reservation {
-    private int id;
-    private int clientId;
-    private int eventId;
-    private String status;
+    private final IntegerProperty id = new SimpleIntegerProperty();
+    private final IntegerProperty clientId = new SimpleIntegerProperty();
+    private final IntegerProperty eventId = new SimpleIntegerProperty();
+    private final StringProperty status = new SimpleStringProperty();
 
     public Reservation(int id, int clientId, int eventId, String status) {
-        this.id = id;
-        this.clientId = clientId;
-        this.eventId = eventId;
-        this.status = status;
+        setId(id);
+        setClientId(clientId);
+        setEventId(eventId);
+        setStatus(status);
     }
 
     public Reservation(int clientId, int eventId, String status) {
-        this.clientId = clientId;
-        this.eventId = eventId;
-        this.status = status;
+        setClientId(clientId);
+        setEventId(eventId);
+        setStatus(status);
     }
 
-    // Getters and Setters
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
+    // Property getters
+    public IntegerProperty idProperty() { return id; }
+    public IntegerProperty clientIdProperty() { return clientId; }
+    public IntegerProperty eventIdProperty() { return eventId; }
+    public StringProperty statusProperty() { return status; }
 
-    public int getClientId() { return clientId; }
-    public void setClientId(int clientId) { this.clientId = clientId; }
+    // Regular getters
+    public int getId() { return id.get(); }
+    public int getClientId() { return clientId.get(); }
+    public int getEventId() { return eventId.get(); }
+    public String getStatus() { return status.get(); }
 
-    public int getEventId() { return eventId; }
-    public void setEventId(int eventId) { this.eventId = eventId; }
-
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
-
-    @Override
-    public String toString() {
-        return "Reservation{" +
-                "id=" + id +
-                ", clientId=" + clientId +
-                ", eventId=" + eventId +
-                ", status='" + status + '\'' +
-                '}';
-    }
+    // Setters
+    public void setId(int id) { this.id.set(id); }
+    public void setClientId(int id) { this.clientId.set(id); }
+    public void setEventId(int id) { this.eventId.set(id); }
+    public void setStatus(String status) { this.status.set(status); }
 }

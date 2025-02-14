@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="Controllers.Ajouterunechambre"
+            fx:id="rootPane"
+            style="-fx-padding: 20px;">
+
+    <VBox spacing="15" alignment="TOP_LEFT" AnchorPane.topAnchor="10" AnchorPane.leftAnchor="20">
+        <!-- Titre -->
+        <Label text="Ajouter une chambre"
+               style="-fx-font-family: 'Segoe UI'; -fx-font-size: 26px; -fx-text-fill: #333333;"/>
+
+        <!-- Sélection de l'hôtel -->
+        <HBox spacing="10">
+            <Label text="Sélectionner un hôtel"
+                   style="-fx-font-family: 'Segoe UI'; -fx-font-size: 18px; -fx-text-fill: #555555;"/>
+            <ComboBox fx:id="cbHotel"
+                      prefWidth="290"
+                      promptText="Choisir un hôtel"
+                      style="-fx-font-size: 16px; -fx-background-color: #ffffff; -fx-border-radius: 5px; -fx-border-color: #ccc;"/>
+        </HBox>
+
+        <!-- Numéro de chambre -->
+        <HBox spacing="10">
+            <Label text="Numéro de chambre"
+                   style="-fx-font-family: 'Segoe UI'; -fx-font-size: 18px; -fx-text-fill: #555555;"/>
+            <TextField fx:id="tfRoomNumber"
+                       prefHeight="30" prefWidth="290"
+                       promptText="Numéro de la chambre"
+                       style="-fx-font-size: 16px; -fx-background-color: #ffffff; -fx-border-radius: 5px; -fx-border-color: #ccc;"/>
+        </HBox>
+
+        <!-- Capacité -->
+        <HBox spacing="105">
+            <Label text="Capacité"
+                   style="-fx-font-family: 'Segoe UI'; -fx-font-size: 18px; -fx-text-fill: #555555;"/>
+            <TextField fx:id="tfCapacity"
+                       prefHeight="30" prefWidth="290"
+                       promptText="Nombre de personnes"
+                       style="-fx-font-size: 16px; -fx-background-color: #ffffff; -fx-border-radius: 5px; -fx-border-color: #ccc;"/>
+        </HBox>
+
+        <!-- Bouton Ajouter -->
+        <Button onAction="#handleAddRoom"
+                style="-fx-background-color: #5c6bc0; -fx-text-fill: white; -fx-font-size: 18px; -fx-border-radius: 5px;"
+                text="Ajouter la chambre"/>
+    </VBox>
+</AnchorPane>

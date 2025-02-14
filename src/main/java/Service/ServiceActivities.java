@@ -39,13 +39,17 @@ public class ServiceActivities implements IService<Activities> {
 
     @Override
     public void supprimer(Activities activities) throws SQLException {
-        String req = "DELETE FROM activities WHERE id_activity = ?;";
-        try (PreparedStatement pst = con.prepareStatement(req)) {
-            pst.setInt(1, activities.getId());
+
+    }
+    public void delete(int activityId) throws SQLException {
+        String query = "DELETE FROM activities WHERE id_activity = ?";
+        try (PreparedStatement pst = con.prepareStatement(query)) {
+            pst.setInt(1, activityId);
             pst.executeUpdate();
-            System.out.println("Activity deleted successfully!");
         }
     }
+
+
 
     @Override
     public void update(Activities activities) throws SQLException {

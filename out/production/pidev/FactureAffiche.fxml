@@ -7,23 +7,22 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="445.0" prefWidth="698.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.FactureAfficheController">
+<AnchorPane prefHeight="445.0" prefWidth="758.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.FactureAfficheController">
     <children>
-        <!-- Search TextField -->
         <TextField fx:id="searchField" layoutX="50.0" layoutY="20.0" promptText="Search..." />
 
-        <!-- Start Date Picker -->
         <DatePicker fx:id="dateDebut" layoutX="50.0" layoutY="50.0" promptText="Start Date" />
 
-        <!-- End Date Picker -->
         <DatePicker fx:id="dateFin" layoutX="250.0" layoutY="50.0" promptText="End Date" />
 
-        <TableView fx:id="tablev" layoutX="37.0" layoutY="99.0" prefHeight="300.0" prefWidth="651.0">
+        <TableView fx:id="tablev" layoutX="3.0" layoutY="99.0" prefHeight="300.0" prefWidth="745.0">
             <columns>
                 <TableColumn fx:id="colId" prefWidth="37.333316802978516" text="ID" />
-                <TableColumn fx:id="colReservationId" prefWidth="117.33336639404297" text="Reservation ID" />
-                <TableColumn fx:id="colAmount" prefWidth="98.66661071777344" text="Amount" />
-                <TableColumn fx:id="colDate" prefWidth="73.3333740234375" text="Date" />
+                <TableColumn fx:id="colReservationId" prefWidth="93.99999237060547" text="Reservation ID" />
+                <TableColumn fx:id="colAmount" prefWidth="87.33335876464844" text="Amount" />
+                <TableColumn fx:id="colDate" prefWidth="97.33331298828125" text="Date" />
+                <TableColumn fx:id="colConditionPaiement" prefWidth="132.66668701171875" text="Condition de Paiement" />
+                <TableColumn fx:id="colModePaiement" prefWidth="120.0" text="Mode de Paiement" />
                 <TableColumn fx:id="colActions" prefWidth="516.6665954589844" />
             </columns>
         </TableView>

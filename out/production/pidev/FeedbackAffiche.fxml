@@ -11,14 +11,12 @@
 
 <AnchorPane prefHeight="525.0" prefWidth="1079.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.FeedbackAfficheController">
     <children>
-        <!-- Search Field -->
         <HBox layoutX="50.0" layoutY="10.0" spacing="20.0">
             <children>
                 <TextField fx:id="searchField" prefWidth="200.0" promptText="Rechercher..." />
             </children>
         </HBox>
 
-        <!-- Filters Section -->
         <HBox layoutX="50.0" layoutY="60.0" spacing="20.0">
             <children>
                 <ComboBox fx:id="clientComboBox" prefWidth="200.0" promptText="ID Client" />
@@ -28,7 +26,6 @@
             </children>
         </HBox>
 
-        <!-- Feedback Table -->
         <TableView fx:id="tablev" layoutX="14.0" layoutY="106.0" prefHeight="350.0" prefWidth="1079.0" style="-fx-background-color: #f4f4f4;">
             <columns>
                 <TableColumn fx:id="colId" prefWidth="50.0" text="ID" />
@@ -41,7 +38,6 @@
             </columns>
         </TableView>
 
-        <!-- Buttons -->
         <HBox layoutX="50.0" layoutY="480.0" spacing="20.0">
             <children>
                 <Button fx:id="btnAjouter" onAction="#openAddWindowFeedback" style="-fx-background-color: #4CAF50; -fx-text-fill: white;" text="➕ Ajouter" />

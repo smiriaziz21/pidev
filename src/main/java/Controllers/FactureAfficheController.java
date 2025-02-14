@@ -54,6 +54,12 @@ public class FactureAfficheController implements Initializable {
     private DatePicker dateDebut;
     @FXML
     private DatePicker dateFin;
+    @FXML
+    private TableColumn<Facture, String> colConditionPaiement;
+
+    @FXML
+    private TableColumn<Facture, String> colModePaiement;
+
 
     private final ServiceFacture service = new ServiceFacture();
     private ObservableList<Facture> facturesList = FXCollections.observableArrayList();
@@ -79,6 +85,8 @@ public class FactureAfficheController implements Initializable {
             colId.setCellValueFactory(cellData -> cellData.getValue().idProperty().asObject());
             colReservationId.setCellValueFactory(cellData -> cellData.getValue().reservationIdProperty().asObject());
             colAmount.setCellValueFactory(cellData -> cellData.getValue().amountProperty().asObject());
+            colConditionPaiement.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getConditionDePaiement()));
+            colModePaiement.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getModeDePaiement()));
 
             colDate.setCellValueFactory(cellData -> {
                 if (cellData.getValue().getDate() != null) {
